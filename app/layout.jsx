@@ -1,16 +1,9 @@
 import GlobalProvider from "@/components/Application/GlobalProvider";
-//import "./globals.css";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import "./css/tailwind.css";
-import "./css/custom.css";
-import "./css/all.css";
-import "./css/responsive.css";
-import "./css/owl.carousel.min.css";
-import "./css/animate.css";
+import "./globals.css";
 import { Assistant } from 'next/font/google'
 import { ToastContainer } from 'react-toastify';
 import Script from "next/script";
+
 const assistantFont = Assistant({
   weight: ['400', '500', '600', '700', '800'],
   subsets: ['latin'],
@@ -36,7 +29,6 @@ export default function RootLayout({ children }) {
         <Script src="/assets/js/owl.carousel.min.js" strategy="afterInteractive" />
         <Script src="/assets/js/wow.min.js" strategy="afterInteractive" />
         <Script src="/assets/js/script.js" strategy="afterInteractive" />
-    
       </body>
     </html>
   );
