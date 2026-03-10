@@ -1,17 +1,29 @@
 import WebsiteBreadcrumb from "@/components/Application/Website/WebsiteBreadcrumb"
-import axios from "axios"
 import Image from "next/image"
 import placeholderImg from '@/public/assets/images/img-placeholder.webp'
 import Link from "next/link"
 import { WEBSITE_PRODUCT_DETAILS } from "@/routes/WebsiteRoute"
+import { headers } from 'next/headers'
+
 const OrderDetails = async ({ params }) => {
     const { orderid } = await params
-    const { data: orderData } = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/orders/get/${orderid}`)
-    console.log(orderData)
+    const headersList = await headers()
+    const host = headersList.get('x-forwarded-host') || headersList.get('host')
+    const protocol = headersList.get('x-forwarded-proto') || 'http'
+
+    let orderData = null
+    try {
+        const res = await fetch(`${protocol}://${host}/api/orders/get/${orderid}`, { cache: 'no-store' })
+        orderData = await res.json()
+    } catch (error) {
+        orderData = { success: false }
+    }
+
     const breadcrumb = {
         title: 'Order Details',
         links: [{ label: 'Order Details' }]
     }
+
     return (
         <div>
             <WebsiteBreadcrumb props={breadcrumb} />
