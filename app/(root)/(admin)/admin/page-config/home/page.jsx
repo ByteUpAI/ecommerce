@@ -452,7 +452,7 @@ const HomePageConfig = () => {
                             showToast('warning', 'Please fill the existing empty testimonial first.')
                             return
                           }
-                          form.setValue('testimonials', [{ name: '', rating: 5, content: '' }, ...testimonials])
+                          form.setValue('testimonials', [{ name: '', designation: '', rating: 5, content: '' }, ...testimonials])
                         }}
                         className='bg-gray-100 dark:bg-card border rounded-lg px-4 py-2 hover:bg-gray-200 transition-colors text-sm font-medium'
                       >
@@ -470,6 +470,16 @@ const HomePageConfig = () => {
                                 onChange={(e) => {
                                   const testimonials = form.getValues('testimonials') || []
                                   testimonials[index] = { ...testimonial, name: e.target.value }
+                                  form.setValue('testimonials', testimonials)
+                                }}
+                                className='mb-2'
+                              />
+                              <Input
+                                placeholder='Designation (e.g. Customer)'
+                                value={testimonial.designation || ''}
+                                onChange={(e) => {
+                                  const testimonials = form.getValues('testimonials') || []
+                                  testimonials[index] = { ...testimonial, designation: e.target.value }
                                   form.setValue('testimonials', testimonials)
                                 }}
                                 className='mb-2'
@@ -723,22 +733,6 @@ const HomePageConfig = () => {
 
           if (brandLogoPickerIndex !== null && m && m.length > 0) {
             const selected = m[0]
-
-            try {
-              const dimensions = await getImageDimensions(selected.secure_url || selected.url)
-              const ratio = dimensions.width / dimensions.height
-
-              if (dimensions.width < MIN_BRAND_LOGO_WIDTH || ratio < MIN_BRAND_LOGO_RATIO) {
-                showToast(
-                  'warning',
-                  `Logo must be at least ${MIN_BRAND_LOGO_WIDTH}px wide with ~${MIN_BRAND_LOGO_RATIO}:1 landscape ratio.`
-                )
-                return
-              }
-            } catch (error) {
-              showToast('error', error.message || 'Unable to validate image dimensions.')
-              return
-            }
 
             const current = form.getValues('brandsMarqueeCompanies') || []
             if (current[brandLogoPickerIndex]) {

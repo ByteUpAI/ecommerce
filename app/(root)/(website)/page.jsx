@@ -16,6 +16,7 @@ export const dynamic = 'force-dynamic'
 const Home = async () => {
     let homeConfig = null
     let categories = []
+    let testimonials = []
 
     try {
         const config = await getSiteConfigGroup('home')
@@ -28,7 +29,22 @@ const Home = async () => {
     const hero = homeConfig?.data?.hero || null
     const sliderImages = homeConfig?.data?.sliderImages || []
     const brandsMarqueeCompanies = homeConfig?.data?.brandsMarqueeCompanies || []
-    const testimonials = homeConfig?.data?.testimonials || []
+    const homeConfigTestimonials = homeConfig?.data?.testimonials || []
+
+    try {
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+        const res = await fetch(`${baseUrl}/api/testimonials`, { cache: 'no-store' })
+        const data = await res.json()
+
+        testimonials = data?.success ? (data?.data || []) : []
+    } catch (error) {
+        console.error('Testimonials fetch error:', error.message)
+        testimonials = []
+    }
+
+    if (!Array.isArray(testimonials) || testimonials.length === 0) {
+        testimonials = homeConfigTestimonials
+    }
 
     try {
         categories = await getCategories()

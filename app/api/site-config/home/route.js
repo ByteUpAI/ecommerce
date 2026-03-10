@@ -43,6 +43,7 @@ const schema = z.object({
   })).optional(),
   testimonials: z.array(z.object({
     name: z.string().optional(),
+    designation: z.string().optional(),
     rating: z.number().min(1).max(5).optional(),
     content: z.string().optional(),
   })).optional(),

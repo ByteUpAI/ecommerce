@@ -48,33 +48,6 @@ const Header = () => {
             {navLinks.map((link) => {
               const active = isActive(link)
 
-              if (link.label === 'Shop') {
-                return (
-                  <div key={link.href} className="relative group">
-                    <Link
-                      href={link.href}
-                      className={`relative pb-2 font-medium text-gray-800 after:absolute after:left-0 after:-bottom-1 after:h-[3px] after:bg-[var(--primary)] after:transition-all after:duration-300 ${
-                        active ? 'after:w-full' : 'after:w-0 group-hover:after:w-full'
-                      }`}
-                    >
-                      Shop
-                    </Link>
-                    {/* Dropdown */}
-                    <div className="absolute left-0 top-full mt-6 w-60 bg-white shadow-lg z-10 opacity-0 invisible translate-y-3 transition-all duration-300 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0">
-                      <Link href="/shop/shop-1" className="block px-6 py-4">
-                        <span className="relative inline-block after:absolute after:left-0 after:-bottom-1 after:h-[3px] after:w-0 after:bg-[var(--primary)] after:transition-all after:duration-300 hover:after:w-full">
-                          Shop-1
-                        </span>
-                      </Link>
-                      <Link href="/shop/shop-2" className="block px-6 py-4">
-                        <span className="relative inline-block after:absolute after:left-0 after:-bottom-1 after:h-[3px] after:w-0 after:bg-[var(--primary)] after:transition-all after:duration-300 hover:after:w-full">
-                          Shop-2
-                        </span>
-                      </Link>
-                    </div>
-                  </div>
-                )
-              }
 
               return (
                 <Link

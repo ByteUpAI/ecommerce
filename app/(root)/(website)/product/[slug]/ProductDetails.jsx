@@ -15,7 +15,7 @@ import Link from "next/link"
 import { useEffect, useMemo, useCallback, useState } from "react"
 import { useRouter } from 'next/navigation'
 import imgPlaceholder from '@/public/assets/images/img-placeholder.webp'
-import { decode, encode } from "entities";
+import { decode } from "entities";
 import { HiMinus, HiPlus } from "react-icons/hi2";
 import ButtonLoading from "@/components/Application/ButtonLoading";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,6 +24,7 @@ import { showToast } from "@/lib/showToast";
 import { Button } from "@/components/ui/button";
 import loadingSvg from '@/public/assets/images/loading.svg'
 import ProductReveiw from "@/components/Application/Website/ProductReveiw";
+import { marked } from 'marked'
 
 const ProductDetails = ({ product, variant, attributeOptions, variants, selectedAttributes, reviewCount }) => {
 
@@ -33,9 +34,24 @@ const ProductDetails = ({ product, variant, attributeOptions, variants, selected
     const cartStore = useSelector(store => store.cartStore)
     
     const [activeThumb, setActiveThumb] = useState()
+
     const [qty, setQty] = useState(1)
     const [isAddedIntoCart, setIsAddedIntoCart] = useState(false)
     const [isProductLoading, setIsProductLoading] = useState(false)
+
+    const displayMedia = useMemo(() => {
+        const variantMedia = Array.isArray(variant?.media) ? variant.media : []
+        if (variantMedia.length > 0) return variantMedia
+        const productMedia = Array.isArray(product?.media) ? product.media : []
+        return productMedia
+    }, [variant?.media, product?.media])
+
+    const descriptionHtml = useMemo(() => {
+        const raw = decode(product?.description || '')
+        if (!raw) return ''
+        if (raw.includes('<')) return raw
+        return marked.parse(raw)
+    }, [product?.description])
 
     const getAttrValue = useCallback((attrs, key) => {
         if (!attrs) return undefined
@@ -140,8 +156,8 @@ const ProductDetails = ({ product, variant, attributeOptions, variants, selected
     }, [product?.slug, product?.variantConfig?.attributes, getAttrValue])
 
     useEffect(() => {
-        setActiveThumb(variant?.media[0]?.secure_url)
-    }, [variant])
+        setActiveThumb(displayMedia?.[0]?.secure_url)
+    }, [displayMedia])
 
     useEffect(() => {
         if (cartStore.count > 0) {
@@ -181,7 +197,7 @@ const ProductDetails = ({ product, variant, attributeOptions, variants, selected
             attributes: variant.attributes || {},
             mrp: variant.mrp,
             sellingPrice: variant.sellingPrice,
-            media: variant?.media[0]?.secure_url,
+            media: activeThumb || displayMedia?.[0]?.secure_url,
             qty: qty
         }
 
@@ -231,7 +247,7 @@ const ProductDetails = ({ product, variant, attributeOptions, variants, selected
                         />
                     </div>
                     <div className="flex xl:flex-col items-center xl:gap-5 gap-3 xl:w-36 overflow-auto xl:pb-0 pb-2 max-h-[600px]">
-                        {variant?.media?.map((thumb) => (
+                        {displayMedia?.map((thumb) => (
                             <Image
                                 key={thumb._id}
                                 src={thumb?.secure_url || imgPlaceholder.src}
@@ -263,7 +279,7 @@ const ProductDetails = ({ product, variant, attributeOptions, variants, selected
 
                     </div>
 
-                    <div className="line-clamp-3" dangerouslySetInnerHTML={{ __html: decode(product.description) }}></div>
+                    <div className="line-clamp-3" dangerouslySetInnerHTML={{ __html: descriptionHtml }}></div>
 
 
                     {/* Dynamic Variant Attribute Selectors */}
@@ -379,7 +395,7 @@ const ProductDetails = ({ product, variant, attributeOptions, variants, selected
                         <h2 className="font-semibold text-2xl">Product Description</h2>
                     </div>
                     <div className="p-3">
-                        <div dangerouslySetInnerHTML={{ __html: encode(product.description) }}></div>
+                        <div dangerouslySetInnerHTML={{ __html: descriptionHtml }}></div>
                     </div>
                 </div>
             </div>

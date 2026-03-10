@@ -48,7 +48,7 @@ useEffect(() => {
 }
 
 
-const Testimonial = () => {
+const Testimonial = ({ testimonials = [] }) => {
   // Static testimonials as per your HTML requirement
   const staticTestimonials = [
     {
@@ -77,6 +77,17 @@ const Testimonial = () => {
       designation: 'Customer',
     },
   ]
+
+  const normalizedTestimonials = (Array.isArray(testimonials) ? testimonials : [])
+    .filter(Boolean)
+    .map((t) => ({
+      name: t?.name || 'Customer',
+      review: t?.review || t?.content || '',
+      designation: t?.designation || 'Customer',
+      rating: typeof t?.rating === 'number' ? t.rating : null,
+    }))
+
+  const displayTestimonials = normalizedTestimonials.length > 0 ? normalizedTestimonials : staticTestimonials
 
   const settings = {
     dots: false, // Turned off to match your HTML cleaner look, set to true if needed
@@ -130,8 +141,8 @@ const Testimonial = () => {
 
         <div className="testimonial-slider">
           <Slider {...settings}>
-            {staticTestimonials.map((item, index) => (
-              <div key={index} className="px-3">
+            {displayTestimonials.map((item, index) => (
+              <div key={index} className="px-3 h-full">
                 <motion.div 
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -139,8 +150,8 @@ const Testimonial = () => {
                   className="flex flex-col h-full wow fadeInUp"
                 >
                   {/* Review Box */}
-                  <div className="bg-white bg-white flex-1 flex p-6 lg:p-10 testimonial-text">
-                    <p className="text-gray-900 text-base mb-0">
+                  <div className="bg-white bg-white p-6 lg:p-10 testimonial-text h-[260px] lg:h-[280px] overflow-hidden">
+                    <p className="text-gray-900 text-base mb-0 overflow-hidden text-ellipsis [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:9]">
                       {item.review}
                     </p>
                   </div>
