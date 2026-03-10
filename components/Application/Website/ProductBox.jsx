@@ -3,7 +3,6 @@ import Image from 'next/image'
 import React from 'react'
 import imgPlaceholder from '@/public/assets/images/img-placeholder.webp'
 import Link from 'next/link'
-import { FaRegHeart } from 'react-icons/fa'
 import { WEBSITE_PRODUCT_DETAILS } from '@/routes/WebsiteRoute'
 
 const ProductBox = ({ product, wowDelay = '0.2s' }) => {
@@ -68,9 +67,6 @@ const ProductBox = ({ product, wowDelay = '0.2s' }) => {
                     >
                         Add to cart
                     </Link>
-                    <button className="cart-btn-sm">
-                        <FaRegHeart />
-                    </button>
                 </div>
             </div>
         </div>
