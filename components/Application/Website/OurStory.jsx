@@ -113,9 +113,9 @@ const StatItem = ({ value, label }) => (
 
 const OurStory = () => {
   const revealRef = useRevealLine()
-  const counter616Ref = useCounter(616)
-  const counter203Ref = useCounter(203)
-  const counter2713Ref = useCounter(2713)
+  const projectsCounterRef = useCounter(128)
+  const countriesCounterRef = useCounter(12)
+  const hiresCounterRef = useCounter(48)
 
   return (
     <section
@@ -162,7 +162,7 @@ const OurStory = () => {
                     before:duration-500
                     [&.show]:before:scale-x-100"
                 >
-                  2019
+                  2025
                 </span>
               </span>
               {' '}Number
@@ -176,10 +176,10 @@ const OurStory = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 mt-8 gap-y-6 gap-x-3">
-              <StatItem value="351M Sales <br/> generated" label="" />
-              <StatItem value="16K New clients <br/> joined us" label="" />
-              <StatItem value="12% Market share <br/> increase" label="" />
-              <StatItem value="200T Resources <br/> produced" label="" />
+              <StatItem value="₹12M Revenue <br/> run rate" label="" />
+              <StatItem value="160 Clients <br/> onboarded" label="" />
+              <StatItem value="28% Market share <br/> growth" label="" />
+              <StatItem value="4 Product lines <br/> launched" label="" />
             </div>
           </motion.div>
 
@@ -199,16 +199,13 @@ const OurStory = () => {
                 data-speed="2"
               >
                 <ProgressRing size="lg">
-                  <div className="flex">
-                    <span
-                      ref={counter616Ref}
-                      className="text-72 font-bold text-[var(--primary)] counter"
-                    >
-                      0
-                    </span>
-                    <span className="text-72 font-bold text-[var(--primary)]">K</span>
-                  </div>
-                  <span className="text-lg font-semibold font-medium">Projects completed</span>
+                  <span
+                    ref={projectsCounterRef}
+                    className="text-72 font-bold text-[var(--primary)] counter"
+                  >
+                    0
+                  </span>
+                  <span className="text-lg font-semibold font-medium">Projects delivered</span>
                 </ProgressRing>
               </div>
             </div>
@@ -222,13 +219,13 @@ const OurStory = () => {
               >
                 <ProgressRing size="sm">
                   <span
-                    ref={counter203Ref}
+                    ref={countriesCounterRef}
                     className="text-52 font-bold text-[var(--primary)] counter"
                   >
                     0
                   </span>
                   <span className="text-lg md:text-lg lg:text-base xl:text-lg font-semibold font-medium">
-                    Countries
+                    Countries served
                   </span>
                 </ProgressRing>
               </div>
@@ -240,13 +237,13 @@ const OurStory = () => {
               >
                 <ProgressRing size="md">
                   <span
-                    ref={counter2713Ref}
+                    ref={hiresCounterRef}
                     className="text-52 font-bold text-[var(--primary)] counter"
                   >
                     0
                   </span>
                   <span className="text-lg md:text-lg lg:text-base xl:text-lg font-semibold">
-                    New talents hired
+                    Teammates hired
                   </span>
                 </ProgressRing>
               </div>

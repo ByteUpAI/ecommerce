@@ -3,6 +3,7 @@ import React from 'react'
 import { FaChevronRight } from 'react-icons/fa'
 import ProductBox from './ProductBox'
 import { getFeaturedProducts } from '@/lib/productService'
+import { WEBSITE_SHOP } from '@/routes/WebsiteRoute'
 
 const FeaturedProduct = async () => {
     let productData = null
@@ -67,7 +68,7 @@ const FeaturedProduct = async () => {
 
                 {/* View All */}
                 <div className="relative mt-14 text-center">
-                    <Link href="/products" className="et-black-button">
+                    <Link href={WEBSITE_SHOP} className="et-black-button">
                         View All <FaChevronRight className="inline ml-1" />
                     </Link>
                 </div>

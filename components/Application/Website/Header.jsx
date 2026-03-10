@@ -14,14 +14,23 @@ import Search from './Search'
 import { VscAccount } from "react-icons/vsc"
 import { useSelector } from 'react-redux'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 const Header = () => {
   const auth = useSelector((store) => store.authStore.auth)
   const [isMobileMenu, setIsMobileMenu] = useState(false)
   const [showSearch, setShowSearch] = useState(false)
   const [isShopSubmenuOpen, setIsShopSubmenuOpen] = useState(false)
+  const [mobileSearchQuery, setMobileSearchQuery] = useState('')
   const pathname = usePathname()
+  const router = useRouter()
+
+  const handleMobileSearch = () => {
+    const value = (mobileSearchQuery || '').trim()
+    if (!value) return
+    setIsMobileMenu(false)
+    router.push(`${WEBSITE_SHOP}?q=${encodeURIComponent(value)}`)
+  }
 
   const navLinks = useMemo(() => ([
     { label: 'Home', href: WEBSITE_HOME, match: (path) => path === '/' },
@@ -47,7 +56,6 @@ const Header = () => {
           <nav className="hidden lg:flex items-center space-x-10 text-[16px] text-black font-medium">
             {navLinks.map((link) => {
               const active = isActive(link)
-
 
               return (
                 <Link
@@ -116,7 +124,7 @@ const Header = () => {
       </div>
 
       {/* Search Bar */}
-      {showSearch && <Search />}
+      <Search isShow={showSearch} />
 
       {/* Mobile Overlay */}
       <div
@@ -184,10 +192,22 @@ const Header = () => {
               type="text"
               placeholder="Search..."
               className="w-full border border-gray-300 px-4 py-3 bg-white focus:outline-none"
+              value={mobileSearchQuery}
+              onChange={(e) => setMobileSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  handleMobileSearch()
+                }
+              }}
             />
-            <span className="absolute right-4 top-3.5 text-gray-500">
+            <button
+              type="button"
+              onClick={handleMobileSearch}
+              className="absolute right-4 top-3.5 text-gray-500"
+            >
               <IoIosSearch />
-            </span>
+            </button>
           </div>
         </div>
 

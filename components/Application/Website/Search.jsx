@@ -8,9 +8,19 @@ import { IoSearchOutline } from "react-icons/io5";
 
 const Search = ({ isShow }) => {
     const router = useRouter()
-    const [query, setQuery] = useState()
+    const [query, setQuery] = useState('')
+
     const handleSearch = () => {
-        router.push(`${WEBSITE_SHOP}?q=${query}`)
+        const value = (query || '').trim()
+        if (!value) return
+        router.push(`${WEBSITE_SHOP}?q=${encodeURIComponent(value)}`)
+    }
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault()
+            handleSearch()
+        }
     }
     return (
         <div
@@ -21,7 +31,9 @@ const Search = ({ isShow }) => {
                 <Input
                     className="rounded-full md:h-12 ps-5 border-primary"
                     placeholder="Search..."
+                    value={query}
                     onChange={(e) => setQuery(e.target.value)}
+                    onKeyDown={handleKeyDown}
                 />
                 <button type="button" onClick={handleSearch} className="absolute right-3 cursor-pointer">
                     <IoSearchOutline size={20} className="text-gray-500" />
