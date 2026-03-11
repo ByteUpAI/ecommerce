@@ -1,12 +1,10 @@
-
 'use client'
 import useFetch from '@/hooks/useFetch'
 import React, { useEffect, useState } from 'react'
-import ButtonLoading from '../ButtonLoading'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { WEBSITE_SHOP } from '@/routes/WebsiteRoute'
-import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { Button } from '@/components/ui/button'
 
 // ── Individual accordion group ──
 const FilterAccordion = ({ label, children }) => {
@@ -52,7 +50,7 @@ const FilterCheckbox = ({ label, checked, onChange, isFirst, isLast }) => (
 
 // ── Section heading (styled like PHP) ──
 const SectionHeading = ({ children }) => (
-    <h2 className="text-xl font-bold text-black relative mb-8
+    <h2 className="text-xl font-bold text-black relative mb-4
         before:content-[''] before:absolute before:left-0 before:-bottom-2 before:-translate-y-1/2
         before:w-6 before:h-2 before:border-b-2 before:border-[var(--primary)]
         after:content-[''] after:absolute after:left-7 after:-bottom-2 after:-translate-y-1/2
@@ -104,7 +102,7 @@ const PriceRange = ({ onApply, initialMin = 0, initialMax = 100000 }) => {
                             const val = Math.min(Number(e.target.value), maxVal - 1000)
                             setMinVal(val)
                         }}
-                        className="range-input"
+                        className="range-input absolute top-1/2 -translate-y-1/2"
                     />
 
                     {/* Max thumb */}
@@ -118,7 +116,7 @@ const PriceRange = ({ onApply, initialMin = 0, initialMax = 100000 }) => {
                             const val = Math.max(Number(e.target.value), minVal + 1000)
                             setMaxVal(val)
                         }}
-                        className="range-input"
+                        className="range-input absolute top-1/2 -translate-y-1/2"
                     />
                 </div>
 
@@ -229,42 +227,30 @@ const Filter = ({ onClose }) => {
 
     return (
         <div>
-            {/* Clear all filters */}
-            {searchParams.size > 0 && (
-                <Button type="button" variant="destructive" className="w-full mb-6" asChild>
-                    <Link href={WEBSITE_SHOP}>Clear All Filters</Link>
-                </Button>
-            )}
+            {/* Mobile close button */}
+            <div className="lg:hidden flex justify-end mb-4">
+                <button type="button" onClick={onClose} className="cursor-pointer">
+                    <i className="fa-solid fa-xmark text-xl" />
+                </button>
+            </div>
 
-            <div className="flex flex-col gap-y-8 md:gap-y-14">
+            <div className="flex flex-col gap-y-6 md:gap-y-8 lg:mt-10">
 
-                {/* Search + mobile close */}
-                <div className="flex justify-between items-center">
-                    <div className="flex items-center border border-[var(--input-border)] focus-within:ring-1 focus-within:ring-[var(--input-focus)] transition">
-                        <input
-                            type="search"
-                            placeholder="Search products..."
-                            className="text-base ps-[var(--input-x-padding)] py-[var(--input-y-padding)] outline-none bg-transparent"
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    urlSearchParams.set('q', e.target.value)
-                                    router.push(`${WEBSITE_SHOP}?${urlSearchParams}`)
-                                }
-                            }}
-                            defaultValue={searchParams.get('q') || ''}
-                        />
-                        <i className="fa-solid fa-magnifying-glass pe-[var(--input-x-padding)] text-[var(--text-gray)]" />
+                {/* Clear All Filters button at top of filter */}
+                {searchParams.size > 0 && (
+                    <div>
+                        <Button type="button" variant="destructive" className="w-full mb-6" asChild>
+                            <Link href={WEBSITE_SHOP}>Clear All Filters</Link>
+                        </Button>
+
                     </div>
-                    <div className="lg:hidden">
-                        <button type="button" onClick={onClose} className="cursor-pointer ms-3">
-                            <i className="fa-solid fa-xmark text-xl" />
-                        </button>
-                    </div>
-                </div>
+                )}
 
                 {/* Attribute accordions */}
                 <div>
-                    <SectionHeading>Filter</SectionHeading>
+                    <div className="mb-0">
+                        <SectionHeading>Filter</SectionHeading>
+                    </div>
                     <div className="flex flex-col">
 
                         {/* Category accordion */}
