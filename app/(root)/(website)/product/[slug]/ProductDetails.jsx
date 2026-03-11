@@ -1,11 +1,9 @@
 'use client'
-
 import {
     Breadcrumb,
     BreadcrumbItem,
     BreadcrumbLink,
     BreadcrumbList,
-    BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { IoStar } from "react-icons/io5";
@@ -24,18 +22,22 @@ import { showToast } from "@/lib/showToast";
 import { Button } from "@/components/ui/button";
 import loadingSvg from '@/public/assets/images/loading.svg'
 import ProductReveiw from "@/components/Application/Website/ProductReveiw";
+import { FaFacebookF, FaInstagram, FaXTwitter, FaHeart, FaShareNodes } from "react-icons/fa6";
 
 const ProductDetails = ({ product, variant, attributeOptions, variants, selectedAttributes, reviewCount }) => {
 
     const router = useRouter()
-
     const dispatch = useDispatch()
     const cartStore = useSelector(store => store.cartStore)
-    
+
     const [activeThumb, setActiveThumb] = useState()
     const [qty, setQty] = useState(1)
     const [isAddedIntoCart, setIsAddedIntoCart] = useState(false)
     const [isProductLoading, setIsProductLoading] = useState(false)
+    const [activeTab, setActiveTab] = useState('description')
+    const [shareOpen, setShareOpen] = useState(false)
+
+    // ── All original dynamic logic unchanged ──
 
     const getAttrValue = useCallback((attrs, key) => {
         if (!attrs) return undefined
@@ -58,7 +60,6 @@ const ProductDetails = ({ product, variant, attributeOptions, variants, selected
 
     const doesOptionExist = useCallback((attrKey, optionValue) => {
         if (!variants || !Array.isArray(variants) || variants.length === 0) return true
-
         return variants.some((v) => {
             const attrs = v?.attributes
             const val = getAttrValue(attrs, attrKey)
@@ -71,38 +72,29 @@ const ProductDetails = ({ product, variant, attributeOptions, variants, selected
 
     const isOptionCompatible = useCallback((attrKey, optionValue) => {
         if (!variants || !Array.isArray(variants) || variants.length === 0) return true
-
         const candidate = { ...selection, [attrKey]: String(optionValue) }
-
         return variants.some((v) => {
             const attrs = v?.attributes
             const matches = Object.entries(candidate).every(([k, val]) => String(getAttrValue(attrs, k)) === String(val))
             if (!matches) return false
-            if (typeof v?.stock === 'number') {
-                return v.stock > 0
-            }
+            if (typeof v?.stock === 'number') return v.stock > 0
             return true
         })
     }, [variants, selection, getAttrValue])
 
     const pickBestVariantForChange = useCallback((changedKey, changedValue) => {
         if (!variants || !Array.isArray(variants) || variants.length === 0) return null
-
         const candidates = variants.filter((v) => {
             const attrs = v?.attributes
             if (String(getAttrValue(attrs, changedKey)) !== String(changedValue)) return false
             if (typeof v?.stock === 'number') return v.stock > 0
             return true
         })
-
         if (!candidates.length) return null
-
         const attributeKeys = (product?.variantConfig?.attributes || []).map((a) => a.key)
         const currentSelection = selection
-
         let best = candidates[0]
         let bestScore = -1
-
         for (const c of candidates) {
             const attrs = c?.attributes
             let score = 0
@@ -111,16 +103,10 @@ const ProductDetails = ({ product, variant, attributeOptions, variants, selected
                 const cur = currentSelection?.[k]
                 if (!cur) continue
                 const cv = getAttrValue(attrs, k)
-                if (cv !== undefined && String(cv) === String(cur)) {
-                    score += 1
-                }
+                if (cv !== undefined && String(cv) === String(cur)) score += 1
             }
-            if (score > bestScore) {
-                bestScore = score
-                best = c
-            }
+            if (score > bestScore) { bestScore = score; best = c }
         }
-
         return best
     }, [variants, product?.variantConfig?.attributes, selection, getAttrValue])
 
@@ -145,17 +131,16 @@ const ProductDetails = ({ product, variant, attributeOptions, variants, selected
 
     useEffect(() => {
         if (cartStore.count > 0) {
-            const existingProduct = cartStore.products.findIndex((cartProduct) => cartProduct.productId === product._id && cartProduct.variantId === variant._id)
-
+            const existingProduct = cartStore.products.findIndex(
+                (cartProduct) => cartProduct.productId === product._id && cartProduct.variantId === variant._id
+            )
             if (existingProduct >= 0) {
                 setIsAddedIntoCart(true)
             } else {
                 setIsAddedIntoCart(false)
             }
         }
-
         setIsProductLoading(false)
-
     }, [variant])
 
     const handleThumb = (thumbUrl) => {
@@ -166,9 +151,7 @@ const ProductDetails = ({ product, variant, attributeOptions, variants, selected
         if (actionType === 'inc') {
             setQty(prev => prev + 1)
         } else {
-            if (qty !== 1) {
-                setQty(prev => prev - 1)
-            }
+            if (qty !== 1) setQty(prev => prev - 1)
         }
     }
 
@@ -184,208 +167,318 @@ const ProductDetails = ({ product, variant, attributeOptions, variants, selected
             media: variant?.media[0]?.secure_url,
             qty: qty
         }
-
         dispatch(addIntoCart(cartProduct))
         setIsAddedIntoCart(true)
         showToast('success', 'Product added into cart.')
     }
 
     return (
-        <div className="lg:px-32 px-4">
-
-            {isProductLoading &&
+        <div>
+            {isProductLoading && (
                 <div className="fixed top-10 left-1/2 -translate-x-1/2 z-50">
                     <Image src={loadingSvg} width={80} height={80} alt="Loading" />
                 </div>
-            }
+            )}
 
-            <div className="my-10">
-                <Breadcrumb>
-                    <BreadcrumbList>
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href={WEBSITE_SHOP}>Product</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink asChild>
-                                <Link href={WEBSITE_PRODUCT_DETAILS(product?.slug)}>{product?.name} </Link>
-                            </BreadcrumbLink>
-                        </BreadcrumbItem>
-                    </BreadcrumbList>
-                </Breadcrumb>
-            </div>
-
-            <div className="md:flex justify-between items-start lg:gap-10 gap-5 mb-20">
-                <div className="md:w-1/2 xl:flex xl:justify-center xl:gap-5 md:sticky md:top-0">
-                    <div className="xl:order-last xl:mb-0 mb-5 xl:w-[calc(100%-144px)]">
-                        <Image
-                            src={activeThumb || imgPlaceholder.src}
-                            width={650}
-                            height={650}
-                            alt="product"
-                            className="border rounded max-w-full"
-                        />
-                    </div>
-                    <div className="flex xl:flex-col items-center xl:gap-5 gap-3 xl:w-36 overflow-auto xl:pb-0 pb-2 max-h-[600px]">
-                        {variant?.media?.map((thumb) => (
-                            <Image
-                                key={thumb._id}
-                                src={thumb?.secure_url || imgPlaceholder.src}
-                                width={100}
-                                height={100}
-                                alt="product thumbnail"
-                                className={`md:max-w-full max-w-16 rounded cursor-pointer ${thumb.secure_url === activeThumb ? 'border-2 border-primary' : 'border'}`}
-                                onClick={() => handleThumb(thumb.secure_url)}
-                            />
-                        ))}
+            {/* ── Section 1: Breadcrumb / Hero ── */}
+            <section className="py-12 md:py-18 lg:py-18 px-3 lg:px-8 xl:px-0 bg-center bg-no-repeat bg-contain relative">
+                <div className="absolute inset-0">
+                    <img src="/assets/img/overlay_dark.png" className="w-full h-full" alt="img" />
+                </div>
+                <div className="max-w-3xl lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl mx-auto relative z-10">
+                    <div className="flex flex-col md:flex-row md:justify-between gap-3">
+                        <div className="md:w-6/12">
+                            <h1 className="text-5xl font-bold">Shop</h1>
+                        </div>
+                        <div className="flex md:justify-end gap-4 items-center md:w-6/12">
+                            <div>
+                                <Link href="/" className="line-link">Home</Link>
+                            </div>
+                            <div>
+                                <Link href={WEBSITE_SHOP} className="flex gap-4 font-bold text-[var(--shop-sub-title)]">
+                                    <span className="text-[var(--primary)]"><i className="fa-solid fa-chevron-right"></i></span>
+                                    Shop
+                                </Link>
+                            </div>
+                            <div>
+                                <span className="flex gap-4 font-bold text-[var(--shop-sub-title)]">
+                                    <span className="text-[var(--primary)]"><i className="fa-solid fa-chevron-right"></i></span>
+                                    {product?.name}
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </section>
 
-                <div className="md:w-1/2 md:mt-0 mt-5">
-                    <h1 className="text-3xl font-semibold mb-2">{product.name}</h1>
-                    <div className="flex items-center gap-1 mb-5">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                            <IoStar key={i} />
-                        ))}
-                        <span className="text-sm ps-2">({reviewCount} Reviews)</span>
-                    </div>
-                    <div className="flex items-center gap-2 mb-3">
-                        <span className="text-xl font-semibold">{variant.sellingPrice.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}</span>
-                        <span className="text-sm line-through text-gray-500">{variant.mrp.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}</span>
+            {/* ── Section 2: Product Details ── */}
+            <section className="lg:pb-24 pb-12 md:pb-18 px-3 lg:px-8 xl:px-0 bg-center bg-no-repeat bg-contain relative">
+                <div className="max-w-3xl lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl mx-auto relative z-10">
+                    <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2">
 
+                        {/* Image Gallery */}
+                        <div className="">
+                            <div className="flex flex-col md:flex-row gap-6">
 
-                        <span className="bg-red-500 rounded-2xl px-3 py-1 text-white text-xs ms-5">-{variant.discountPercentage}%</span>
-
-
-                    </div>
-
-                    <div className="line-clamp-3" dangerouslySetInnerHTML={{ __html: decode(product.description) }}></div>
-
-
-                    {/* Dynamic Variant Attribute Selectors */}
-                    {product.variantConfig?.attributes && Array.isArray(product.variantConfig.attributes) && product.variantConfig.attributes.map((attrConfig) => {
-                        const attrKey = attrConfig.key
-                        const attrLabel = attrConfig.label
-                        const attrUnit = attrConfig.unit
-                        const currentValue = getAttrValue(variant?.attributes, attrKey) || selectedAttributes?.[attrKey] || ''
-                        const availableOptions = attributeOptions[attrKey] || []
-
-                        if (availableOptions.length === 0) return null
-
-                        return (
-                            <div key={attrKey} className="mt-5">
-                                <p className="mb-2">
-                                    <span className="font-semibold">{attrLabel}: </span>
-                                    {currentValue}{attrUnit ? ` ${attrUnit}` : ''}
-                                </p>
-                                <div className="flex gap-3 flex-wrap">
-                                    {availableOptions.map(optionValue => {
-                                        const isSelected = String(optionValue) === String(currentValue)
-                                        const exists = doesOptionExist(attrKey, optionValue)
-                                        const compatible = isOptionCompatible(attrKey, optionValue)
-                                        const isIncompatibleButSelectable = exists && !compatible && !isSelected
-
-                                        return (
-                                            <button
-                                                type="button"
-                                                key={optionValue}
-                                                disabled={!exists}
-                                                onClick={() => {
-                                                    if (!exists) return
-                                                    setIsProductLoading(true)
-
-                                                    const best = pickBestVariantForChange(attrKey, optionValue)
-                                                    if (best) {
-                                                        const adjusted = (product?.variantConfig?.attributes || []).some((a) => {
-                                                            if (a.key === attrKey) return false
-                                                            const cur = selection?.[a.key]
-                                                            if (!cur) return false
-                                                            const next = getAttrValue(best?.attributes, a.key)
-                                                            return next !== undefined && String(next) !== String(cur)
-                                                        })
-                                                        if (adjusted) {
-                                                            showToast('warning', 'Some options were adjusted to match available configurations.')
-                                                        }
-                                                        router.push(buildUrlFromVariant(best))
-                                                        return
-                                                    }
-
-                                                    const params = new URLSearchParams()
-                                                    if (product.variantConfig?.attributes) {
-                                                        product.variantConfig.attributes.forEach(attr => {
-                                                            const value = attr.key === attrKey ? optionValue : selection?.[attr.key]
-                                                            if (value !== undefined && value !== null && String(value).length) {
-                                                                params.set(attr.key, value)
-                                                            }
-                                                        })
-                                                    }
-                                                    router.push(`${WEBSITE_PRODUCT_DETAILS(product.slug)}?${params.toString()}`)
-                                                }}
-                                                className={`border py-1 px-3 rounded-lg hover:bg-primary hover:text-white ${
-                                                    isSelected ? 'bg-primary text-white' : ''
-                                                } ${
-                                                    !exists ? 'opacity-50 cursor-not-allowed hover:bg-transparent hover:text-inherit' : 'cursor-pointer'
-                                                } ${
-                                                    isIncompatibleButSelectable ? 'border-yellow-400 text-yellow-700 hover:border-primary hover:text-white' : ''
+                                {/* Thumbnails */}
+                                <div className="md:w-3/12 order-2 md:order-1">
+                                    <div className="md:h-[650px] pb-3 flex md:flex-col gap-3 overflow-auto">
+                                        {variant?.media?.map((thumb) => (
+                                            <div
+                                                key={thumb._id}
+                                                onClick={() => handleThumb(thumb.secure_url)}
+                                                data-image={thumb.secure_url}
+                                                className={`thumb p-4 xl:size-35 2xl:size-40 cursor-pointer flex-shrink-0 ${
+                                                    thumb.secure_url === activeThumb
+                                                        ? 'border border-[var(--primary)]'
+                                                        : ''
                                                 }`}
                                             >
-                                                {optionValue}{attrUnit ? ` ${attrUnit}` : ''}
-                                            </button>
+                                                <Image
+                                                    src={thumb?.secure_url || imgPlaceholder.src}
+                                                    width={100}
+                                                    height={100}
+                                                    alt="product thumbnail"
+                                                    className="w-full h-full object-contain"
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Main Image */}
+                                <div className="md:w-9/12 order-1 md:order-2">
+                                    <div id="zoomContainer" className="relative overflow-hidden cursor-zoom-in">
+                                        <Image
+                                            id="mainImage"
+                                            src={activeThumb || imgPlaceholder.src}
+                                            width={650}
+                                            height={650}
+                                            alt="product"
+                                            className="w-full transition duration-300"
+                                        />
+                                        <button
+                                            id="zoomIcon"
+                                            className="absolute top-3 right-3 bg-black/60 text-white flex items-center justify-center size-9 rounded-full"
+                                        >
+                                            <i className="fa-solid fa-magnifying-glass"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Product Info */}
+                        <div className="xl:ps-12 mt-6 xl:mt-0 relative">
+
+                            {/* Discount + Share */}
+                            <div className="flex justify-between mb-6">
+                                <div>
+                                    <div className="mt-2">
+                                        <p className="text-lg font-bold bg-[var(--primary)] px-2">
+                                            -{variant.discountPercentage}%
+                                        </p>
+                                    </div>
+                                </div>
+                               
+                            </div>
+
+                            {/* Title */}
+                            <div className="flex justify-between mb-6">
+                                <div>
+                                    <h2 className="text-4xl font-bold">{product.name}</h2>
+                                </div>
+                            </div>
+
+                            {/* Price + Rating */}
+                            <div className="flex gap-3 items-center mb-6">
+                                <div className="flex gap-2 items-center relative after:content-['|'] after:text-[var(--text-gray)] after:text-2xl">
+                                    <p className="text-2xl text-black font-bold">
+                                        {variant.sellingPrice.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}
+                                    </p>
+                                    <del className="text-lg text-gray-300">
+                                        {variant.mrp.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}
+                                    </del>
+                                </div>
+                                <div className="flex gap-2">
+                                    <div className="flex gap-1">
+                                        {Array.from({ length: 5 }).map((_, i) => (
+                                            <IoStar key={i} className="text-[var(--primary)]" />
+                                        ))}
+                                    </div>
+                                    <div>
+                                        <p className="text-[var(--text-light)]">({reviewCount} Reviews)</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Short description — original line-clamp-3 */}
+                            <div
+                                className="line-clamp-3"
+                                dangerouslySetInnerHTML={{ __html: decode(product.description) }}
+                            />
+
+                            <div className="border border-dashed border-[var(--text-light)] mb-6 mt-6" />
+
+                            {/* Dynamic Variant Attribute Selectors — original logic, new classes */}
+                            {product.variantConfig?.attributes && Array.isArray(product.variantConfig.attributes) && (
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-3 mb-6">
+                                    {product.variantConfig.attributes.map((attrConfig, colIdx) => {
+                                        const attrKey = attrConfig.key
+                                        const attrLabel = attrConfig.label
+                                        const attrUnit = attrConfig.unit
+                                        const currentValue = getAttrValue(variant?.attributes, attrKey) || selectedAttributes?.[attrKey] || ''
+                                        const availableOptions = attributeOptions[attrKey] || []
+                                        if (availableOptions.length === 0) return null
+
+                                        return (
+                                            <div
+                                                key={attrKey}
+                                                className={`mb-3 md:mb-0 ${colIdx % 2 === 0 ? 'md:border-r border-r-[var(--text-light)] md:pe-3' : 'md:ps-2'}`}
+                                            >
+                                                <h3 className="text-lg font-bold mb-2">
+                                                    {attrLabel} : <span>{currentValue}{attrUnit ? ` ${attrUnit}` : ''}</span>
+                                                </h3>
+                                                <div className="details-filter-group flex gap-3 flex-wrap">
+                                                    {availableOptions.map(optionValue => {
+                                                        const isSelected = String(optionValue) === String(currentValue)
+                                                        const exists = doesOptionExist(attrKey, optionValue)
+                                                        const compatible = isOptionCompatible(attrKey, optionValue)
+                                                        const isIncompatibleButSelectable = exists && !compatible && !isSelected
+
+                                                        return (
+                                                            <button
+                                                                type="button"
+                                                                key={optionValue}
+                                                                disabled={!exists}
+                                                                onClick={() => {
+                                                                    if (!exists) return
+                                                                    setIsProductLoading(true)
+                                                                    const best = pickBestVariantForChange(attrKey, optionValue)
+                                                                    if (best) {
+                                                                        const adjusted = (product?.variantConfig?.attributes || []).some((a) => {
+                                                                            if (a.key === attrKey) return false
+                                                                            const cur = selection?.[a.key]
+                                                                            if (!cur) return false
+                                                                            const next = getAttrValue(best?.attributes, a.key)
+                                                                            return next !== undefined && String(next) !== String(cur)
+                                                                        })
+                                                                        if (adjusted) {
+                                                                            showToast('warning', 'Some options were adjusted to match available configurations.')
+                                                                        }
+                                                                        router.push(buildUrlFromVariant(best))
+                                                                        return
+                                                                    }
+                                                                    const params = new URLSearchParams()
+                                                                    if (product.variantConfig?.attributes) {
+                                                                        product.variantConfig.attributes.forEach(attr => {
+                                                                            const value = attr.key === attrKey ? optionValue : selection?.[attr.key]
+                                                                            if (value !== undefined && value !== null && String(value).length) {
+                                                                                params.set(attr.key, value)
+                                                                            }
+                                                                        })
+                                                                    }
+                                                                    router.push(`${WEBSITE_PRODUCT_DETAILS(product.slug)}?${params.toString()}`)
+                                                                }}
+                                                                className={`details-filter-btn ${isSelected ? 'active' : ''} ${!exists ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} ${isIncompatibleButSelectable ? 'border-yellow-400 text-yellow-700' : ''}`}
+                                                            >
+                                                                {optionValue}{attrUnit ? ` ${attrUnit}` : ''}
+                                                            </button>
+                                                        )
+                                                    })}
+                                                </div>
+                                            </div>
                                         )
                                     })}
                                 </div>
+                            )}
+
+                            <div className="border border-dashed border-[var(--text-light)] mb-6" />
+
+                            {/* Quantity + Cart — original logic, HTML classes */}
+                            <h3 className="text-lg font-bold mb-2">Quantity :</h3>
+                            <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-3 mb-6">
+
+                                {/* Stepper */}
+                                <div className="border border-[var(--text-light)] flex justify-between px-4 py-2 items-center">
+                                    <button
+                                        type="button"
+                                        id="decreaseQty"
+                                        className="text-base font-bold hover:text-[var(--primary)]"
+                                        onClick={() => handleQty('desc')}
+                                    >
+                                        <HiMinus />
+                                    </button>
+                                    <span id="quantityValue">{qty}</span>
+                                    <button
+                                        type="button"
+                                        id="increaseQty"
+                                        className="text-base font-bold hover:text-[var(--primary)]"
+                                        onClick={() => handleQty('inc')}
+                                    >
+                                        <HiPlus />
+                                    </button>
+                                </div>
+
+                                {/* Add to Cart / Go to Cart */}
+                                <div className="flex gap-3 flex-wrap w-full">
+                                    {!isAddedIntoCart ? (
+                                        <ButtonLoading
+                                            type="button"
+                                            text="Add To Cart"
+                                            className="cart-btn w-full"
+                                            onClick={handleAddToCart}
+                                        />
+                                    ) : (
+                                        <Button className="cart-btn w-full" type="button" asChild>
+                                            <Link href={WEBSITE_CART}>Go To Cart</Link>
+                                        </Button>
+                                    )}
+                                </div>
+
+                                {/* Wishlist */}
+                                
                             </div>
-                        )
-                    })}
-                    <div className="mt-5">
-                        <p className="font-bold mb-2">Quantity</p>
-                        <div className="flex items-center h-10 border w-fit rounded-full">
-
-                            <button type="button" className="h-full w-10 flex justify-center items-center" onClick={() => handleQty('desc')}>
-                                <HiMinus />
-                            </button>
-                            <input type="text" value={qty} className="w-14 text-center border-none outline-offset-0" readOnly />
-                            <button type="button" className="h-full w-10 flex justify-center items-center" onClick={() => handleQty('inc')}>
-                                <HiPlus />
-                            </button>
-
                         </div>
                     </div>
-
-
-                    <div className="mt-5">
-                        {!isAddedIntoCart ?
-                            <ButtonLoading type="button" text="Add To Cart" className="w-full rounded-full py-6 text-md cursor-pointer" onClick={handleAddToCart} />
-                            :
-                            <Button className="w-full rounded-full py-6 text-md cursor-pointer" type="button" asChild>
-                                <Link href={WEBSITE_CART}>Go To Cart</Link>
-                            </Button>
-                        }
-
-
-                    </div>
-
                 </div>
-            </div>
+            </section>
 
+            {/* ── Section 3: Description / Review Tabs ── */}
+            <section className="lg:pb-24 pb-12 md:pb-18 px-3 lg:px-8 xl:px-0 bg-center bg-no-repeat bg-contain relative">
+                <div className="max-w-3xl lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl mx-auto relative z-10">
 
-            <div className="mb-10">
-                <div className="shadow rounded border">
-                    <div className="p-3 bg-gray-50 border-b">
-                        <h2 className="font-semibold text-2xl">Product Description</h2>
+                    {/* Tab buttons */}
+                    <div className="flex gap-0 mb-8 border-b border-b-[var(--primary)]">
+                        <button
+                            className={`tab-btn cursor-pointer ${activeTab === 'description' ? 'active-tab' : ''}`}
+                            onClick={() => setActiveTab('description')}
+                        >
+                            Description
+                        </button>
+                        {/* <button
+                            className={`tab-btn cursor-pointer ${activeTab === 'review' ? 'active-tab' : ''}`}
+                            onClick={() => setActiveTab('review')}
+                        >
+                            Review
+                        </button> */}
                     </div>
-                    <div className="p-3">
-                        <div dangerouslySetInnerHTML={{ __html: encode(product.description) }}></div>
-                    </div>
+
+                    {/* Description tab — original encode(product.description) */}
+                    {activeTab === 'description' && (
+                        <div id="description" className="tab-content">
+                            <div dangerouslySetInnerHTML={{ __html: encode(product.description) }} />
+                        </div>
+                    )}
+
+                    {/* Review tab — ProductReveiw now renders its own button + form + list */}
+                    {/* {activeTab === 'review' && (
+                        <div id="review" className="tab-content relative">
+                            <ProductReveiw productId={product._id} />
+                        </div>
+                    )} */}
                 </div>
-            </div>
-
-            <ProductReveiw productId={product._id} />
-
+            </section>
         </div>
     )
 }

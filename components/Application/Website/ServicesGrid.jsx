@@ -9,7 +9,7 @@ const ServicesGrid = ({ categories = [] }) => {
     <section className="relative py-12 md:py-18 lg:py-24 overflow-hidden">
     <div className="top-gradient gradient"></div>
       {/* Background pattern */}
-    <div className="absolute inset-0  bg-[url('../img/map_transparent_dark.png')] bg-center bg-no-repeat bg-contain" ></div>
+    <div className="absolute inset-0  bg-[url('/assets/img/map_transparent_dark.png')] bg-center bg-no-repeat bg-contain" ></div>
 
       {/* Overlay */}
       <div className="absolute inset-0">

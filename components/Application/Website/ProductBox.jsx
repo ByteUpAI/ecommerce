@@ -68,9 +68,6 @@ const ProductBox = ({ product, wowDelay = '0.2s' }) => {
                     >
                         Add to cart
                     </Link>
-                    <button className="cart-btn-sm">
-                        <FaRegHeart />
-                    </button>
                 </div>
             </div>
         </div>
