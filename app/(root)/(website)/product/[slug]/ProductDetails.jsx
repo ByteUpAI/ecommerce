@@ -1,11 +1,5 @@
 'use client'
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
+
 import { IoStar } from "react-icons/io5";
 import { WEBSITE_CART, WEBSITE_PRODUCT_DETAILS, WEBSITE_SHOP } from "@/routes/WebsiteRoute"
 import Image from "next/image"
@@ -21,8 +15,7 @@ import { addIntoCart } from "@/store/reducer/cartReducer";
 import { showToast } from "@/lib/showToast";
 import { Button } from "@/components/ui/button";
 import loadingSvg from '@/public/assets/images/loading.svg'
-import ProductReveiw from "@/components/Application/Website/ProductReveiw";
-import { FaFacebookF, FaInstagram, FaXTwitter, FaHeart, FaShareNodes } from "react-icons/fa6";
+import { marked } from 'marked'
 
 const ProductDetails = ({ product, variant, attributeOptions, variants, selectedAttributes, reviewCount }) => {
 
@@ -36,9 +29,20 @@ const ProductDetails = ({ product, variant, attributeOptions, variants, selected
     const [isAddedIntoCart, setIsAddedIntoCart] = useState(false)
     const [isProductLoading, setIsProductLoading] = useState(false)
     const [activeTab, setActiveTab] = useState('description')
-    const [shareOpen, setShareOpen] = useState(false)
 
-    // ── All original dynamic logic unchanged ──
+    const displayMedia = useMemo(() => {
+        const variantMedia = Array.isArray(variant?.media) ? variant.media : []
+        if (variantMedia.length > 0) return variantMedia
+        const productMedia = Array.isArray(product?.media) ? product.media : []
+        return productMedia
+    }, [variant?.media, product?.media])
+
+    const descriptionHtml = useMemo(() => {
+        const raw = decode(product?.description || '')
+        if (!raw) return ''
+        if (raw.includes('<')) return raw
+        return marked.parse(raw)
+    }, [product?.description])
 
     const getAttrValue = useCallback((attrs, key) => {
         if (!attrs) return undefined
@@ -224,7 +228,7 @@ const ProductDetails = ({ product, variant, attributeOptions, variants, selected
                                 {/* Thumbnails */}
                                 <div className="md:w-3/12 order-2 md:order-1">
                                     <div className="md:h-[650px] pb-3 flex md:flex-col gap-3 overflow-auto">
-                                        {variant?.media?.map((thumb) => (
+                                        {displayMedia?.map((thumb) => (
                                             <div
                                                 key={thumb._id}
                                                 onClick={() => handleThumb(thumb.secure_url)}
@@ -252,7 +256,7 @@ const ProductDetails = ({ product, variant, attributeOptions, variants, selected
                                     <div id="zoomContainer" className="relative overflow-hidden cursor-zoom-in">
                                         <Image
                                             id="mainImage"
-                                            src={activeThumb || imgPlaceholder.src}
+                                            src={activeThumb || displayMedia?.[0]?.secure_url || imgPlaceholder.src}
                                             width={650}
                                             height={650}
                                             alt="product"
@@ -281,7 +285,6 @@ const ProductDetails = ({ product, variant, attributeOptions, variants, selected
                                         </p>
                                     </div>
                                 </div>
-                               
                             </div>
 
                             {/* Title */}
@@ -313,15 +316,15 @@ const ProductDetails = ({ product, variant, attributeOptions, variants, selected
                                 </div>
                             </div>
 
-                            {/* Short description — original line-clamp-3 */}
+                            {/* Short description */}
                             <div
                                 className="line-clamp-3"
-                                dangerouslySetInnerHTML={{ __html: decode(product.description) }}
+                                dangerouslySetInnerHTML={{ __html: descriptionHtml }}
                             />
 
                             <div className="border border-dashed border-[var(--text-light)] mb-6 mt-6" />
 
-                            {/* Dynamic Variant Attribute Selectors — original logic, new classes */}
+                            {/* Dynamic Variant Attribute Selectors */}
                             {product.variantConfig?.attributes && Array.isArray(product.variantConfig.attributes) && (
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-3 mb-6">
                                     {product.variantConfig.attributes.map((attrConfig, colIdx) => {
@@ -396,7 +399,7 @@ const ProductDetails = ({ product, variant, attributeOptions, variants, selected
 
                             <div className="border border-dashed border-[var(--text-light)] mb-6" />
 
-                            {/* Quantity + Cart — original logic, HTML classes */}
+                            {/* Quantity + Cart */}
                             <h3 className="text-lg font-bold mb-2">Quantity :</h3>
                             <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-3 mb-6">
 
@@ -438,7 +441,6 @@ const ProductDetails = ({ product, variant, attributeOptions, variants, selected
                                 </div>
 
                                 {/* Wishlist */}
-                                
                             </div>
                         </div>
                     </div>
@@ -457,27 +459,14 @@ const ProductDetails = ({ product, variant, attributeOptions, variants, selected
                         >
                             Description
                         </button>
-                        {/* <button
-                            className={`tab-btn cursor-pointer ${activeTab === 'review' ? 'active-tab' : ''}`}
-                            onClick={() => setActiveTab('review')}
-                        >
-                            Review
-                        </button> */}
                     </div>
 
-                    {/* Description tab — original encode(product.description) */}
+                    {/* Description tab */}
                     {activeTab === 'description' && (
                         <div id="description" className="tab-content">
-                            <div dangerouslySetInnerHTML={{ __html: encode(product.description) }} />
+                            <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
                         </div>
                     )}
-
-                    {/* Review tab — ProductReveiw now renders its own button + form + list */}
-                    {/* {activeTab === 'review' && (
-                        <div id="review" className="tab-content relative">
-                            <ProductReveiw productId={product._id} />
-                        </div>
-                    )} */}
                 </div>
             </section>
         </div>

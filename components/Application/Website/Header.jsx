@@ -91,27 +91,36 @@ const Header = () => {
 
             {/* User / Avatar */}
             <button className="text-gray-300 hover:text-black text-lg pr-6">
-              {!auth ? (
-                <Link href={USER_DASHBOARD}>
-                  <VscAccount />
-                </Link>
-              ) : (
+              {auth ? (
                 <Link href={USER_DASHBOARD}>
                   <Avatar className="w-8 h-8">
                     <AvatarImage src={auth?.image || userIcon.src} alt="user" />
                   </Avatar>
+                </Link>
+              ) : (
+                <Link href={WEBSITE_LOGIN}>
+                  <VscAccount />
                 </Link>
               )}
             </button>
           </div>
 
           {/* CTA Button */}
-          <Link
-            href={WEBSITE_LOGIN}
-            className="bg-[var(--primary)] px-8 h-20 flex items-center font-semibold text-black hover:bg-black hover:text-white transition"
-          >
-            Login <LuChevronRight className="ml-3" />
-          </Link>
+          {auth ? (
+            <Link
+              href={USER_DASHBOARD}
+              className="bg-[var(--primary)] px-8 h-20 flex items-center font-semibold text-black hover:bg-black hover:text-white transition"
+            >
+              Account <LuChevronRight className="ml-3" />
+            </Link>
+          ) : (
+            <Link
+              href={WEBSITE_LOGIN}
+              className="bg-[var(--primary)] px-8 h-20 flex items-center font-semibold text-black hover:bg-black hover:text-white transition"
+            >
+              Login <LuChevronRight className="ml-3" />
+            </Link>
+          )}
         </div>
 
         {/* Mobile Hamburger */}
@@ -213,12 +222,23 @@ const Header = () => {
 
         {/* Mobile Login CTA */}
         <div className="px-8 mt-8">
-          <Link
-            href={WEBSITE_LOGIN}
-            className="block bg-[var(--primary)] text-center text-white py-4 font-semibold hover:bg-cyan-500 transition"
-          >
-            Login <LuChevronRight className="inline ml-1" />
-          </Link>
+          {auth ? (
+            <Link
+              href={USER_DASHBOARD}
+              className="block bg-[var(--primary)] text-center text-white py-4 font-semibold hover:bg-cyan-500 transition"
+              onClick={() => setIsMobileMenu(false)}
+            >
+              Account <LuChevronRight className="inline ml-1" />
+            </Link>
+          ) : (
+            <Link
+              href={WEBSITE_LOGIN}
+              className="block bg-[var(--primary)] text-center text-white py-4 font-semibold hover:bg-cyan-500 transition"
+              onClick={() => setIsMobileMenu(false)}
+            >
+              Login <LuChevronRight className="inline ml-1" />
+            </Link>
+          )}
         </div>
       </div>
     </header>
