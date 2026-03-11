@@ -27,7 +27,7 @@ const RegisterPage = () => {
     const [loading, setLoading] = useState(false)
     const [isTypePassword, setIsTypePassword] = useState(true)
     const formSchema = zSchema.pick({
-        name: true, email: true, password: true
+        name: true, email: true, password: true, phone: true
     }).extend({
         confirmPassword: z.string()
     }).refine((data) => data.password === data.confirmPassword, {
@@ -42,6 +42,7 @@ const RegisterPage = () => {
         defaultValues: {
             name: "",
             email: "",
+            phone: "",
             password: "",
             confirmPassword: "",
         },
@@ -87,6 +88,21 @@ const RegisterPage = () => {
                                             <FormLabel>Full Name</FormLabel>
                                             <FormControl>
                                                 <Input type="text" placeholder="Developer Creston" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                            <div className='mb-5'>
+                                <FormField
+                                    control={form.control}
+                                    name="phone"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Phone Number</FormLabel>
+                                            <FormControl>
+                                                <Input type="tel" inputMode="numeric" maxLength={10} placeholder="9876543210" {...field} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>

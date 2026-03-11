@@ -11,7 +11,7 @@ export async function POST(request) {
         await connectDB()
         // validation schema  
         const validationSchema = zSchema.pick({
-            name: true, email: true, password: true
+            name: true, email: true, password: true, phone: true
         })
 
         const payload = await request.json()
@@ -22,7 +22,7 @@ export async function POST(request) {
             return response(false, 401, 'Invalid or missing input field.', validatedData.error)
         }
 
-        const { name, email, password } = validatedData.data
+        const { name, email, password, phone } = validatedData.data
 
         // check already registered user 
         const checkUser = await UserModel.exists({ email })
@@ -33,7 +33,10 @@ export async function POST(request) {
         // new registration  
 
         const NewRegistration = new UserModel({
-            name, email, password
+            name,
+            email,
+            password,
+            phone,
         })
 
         await NewRegistration.save()
