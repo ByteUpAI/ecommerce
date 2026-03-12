@@ -35,6 +35,7 @@ const Header = () => {
   const navLinks = useMemo(() => ([
     { label: 'Home', href: WEBSITE_HOME, match: (path) => path === '/' },
     { label: 'Shop', href: WEBSITE_SHOP, match: (path) => path.startsWith('/shop') || path.startsWith('/product') },
+    { label: 'About Us', href: '/about-us', match: (path) => path.startsWith('/about-us') },
     { label: 'Contact Us', href: '/contact-us', match: (path) => path.startsWith('/contact') },
   ]), [])
 

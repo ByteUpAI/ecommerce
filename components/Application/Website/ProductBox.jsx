@@ -4,8 +4,15 @@ import React from 'react'
 import imgPlaceholder from '@/public/assets/images/img-placeholder.webp'
 import Link from 'next/link'
 import { WEBSITE_PRODUCT_DETAILS } from '@/routes/WebsiteRoute'
+import { useDispatch } from 'react-redux'
+import { addIntoCart } from '@/store/reducer/cartReducer'
+import { useRouter } from 'next/navigation'
+import { showToast } from '@/lib/showToast'
 
 const ProductBox = ({ product, wowDelay = '0.2s' }) => {
+    const dispatch = useDispatch()
+    const router = useRouter()
+
     const sellingPrice = product?.sellingPrice
         ? product.sellingPrice.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
         : null
@@ -13,6 +20,29 @@ const ProductBox = ({ product, wowDelay = '0.2s' }) => {
     const mrp = product?.mrp
         ? product.mrp.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
         : null
+
+    const handleAddToCart = () => {
+        const v = product?.defaultVariant
+        if (!v?._id) {
+            showToast('error', 'Product is not available.')
+            return
+        }
+
+        dispatch(addIntoCart({
+            productId: product._id,
+            variantId: v._id,
+            name: product.name,
+            url: product.slug,
+            attributes: {},
+            mrp: v.mrp,
+            sellingPrice: v.sellingPrice,
+            media: v?.media?.[0]?.secure_url || product?.media?.[0]?.secure_url,
+            qty: 1,
+        }))
+
+        showToast('success', 'Product added into cart.')
+        router.push(WEBSITE_PRODUCT_DETAILS(product.slug))
+    }
 
     return (
         // wow fadeInRight — same as PHP data-wow-delay per card
@@ -61,12 +91,13 @@ const ProductBox = ({ product, wowDelay = '0.2s' }) => {
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-center gap-3 mt-4">
-                    <Link
-                        href={WEBSITE_PRODUCT_DETAILS(product.slug)}
+                    <button
+                        type="button"
                         className="cart-btn"
+                        onClick={handleAddToCart}
                     >
                         Add to cart
-                    </Link>
+                    </button>
                 </div>
             </div>
         </div>

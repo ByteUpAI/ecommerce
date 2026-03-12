@@ -20,75 +20,89 @@ const MyAccount = () => {
     return (
         <div>
             <WebsiteBreadcrumb props={breadCrumbData} />
-            <UserPanelLayout>
-                <div className='shadow rounded'>
-                    <div className='p-5 text-xl font-semibold border'>
-                        Dashboard
-                    </div>
-                    <div className='p-5'>
-                        <div className='grid lg:grid-cols-2 grid-cols-1 gap-10'>
-                            <div className='flex items-center justify-between gap-5 border rounded p-3'>
-                                <div>
-                                    <h4 className='font-semibold text-lg mb-1'>Total Orders</h4>
-                                    <span className='font-semibold text-gray-500'>{dashboardData?.data?.totalOrder || 0}</span>
-                                </div>
-                                <div className='w-16 h-16 bg-primary rounded-full flex justify-center items-center'>
-                                    <HiOutlineShoppingBag className='text-white' size={25} />
-                                </div>
+            <section className='px-3 lg:px-8 xl:px-0 py-12 md:py-18 lg:py-24'>
+                <div className='max-w-3xl lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl mx-auto'>
+                    <UserPanelLayout>
+                        <div className='bg-white shadow-box border border-gray-100'>
+                            <div className='p-6 md:p-8 border-b'>
+                                <h1 className='text-2xl md:text-3xl font-bold'>Dashboard</h1>
+                                <p className='text-[var(--text-light)] mt-2'>Track orders and view quick stats.</p>
                             </div>
-                            <div className='flex items-center justify-between gap-5 border rounded p-3'>
-                                <div>
-                                    <h4 className='font-semibold text-lg mb-1'>Items In Cart</h4>
-                                    <span className='font-semibold text-gray-500'>{cartStore?.count}</span>
+
+                            <div className='p-6 md:p-8'>
+                                <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                                    <div className='flex items-center justify-between gap-5 border border-gray-100 rounded p-5'>
+                                        <div>
+                                            <h4 className='font-bold text-lg mb-1'>Total Orders</h4>
+                                            <span className='font-semibold text-[var(--text-light)]'>{dashboardData?.data?.totalOrder || 0}</span>
+                                        </div>
+                                        <div className='w-14 h-14 bg-[var(--primary)] rounded-full flex justify-center items-center'>
+                                            <HiOutlineShoppingBag className='text-white' size={22} />
+                                        </div>
+                                    </div>
+
+                                    <div className='flex items-center justify-between gap-5 border border-gray-100 rounded p-5'>
+                                        <div>
+                                            <h4 className='font-bold text-lg mb-1'>Items In Cart</h4>
+                                            <span className='font-semibold text-[var(--text-light)]'>{cartStore?.count}</span>
+                                        </div>
+                                        <div className='w-14 h-14 bg-[var(--primary)] rounded-full flex justify-center items-center'>
+                                            <IoCartOutline className='text-white' size={22} />
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='w-16 h-16 bg-primary rounded-full flex justify-center items-center'>
-                                    <IoCartOutline className='text-white' size={25} />
+
+                                <div className='mt-10'>
+                                    <div className='flex items-center justify-between gap-4 mb-4'>
+                                        <h2 className='text-xl font-bold'>Recent Orders</h2>
+                                    </div>
+
+                                    <div className='border border-gray-100 rounded overflow-auto'>
+                                        <table className='w-full min-w-[760px]'>
+                                            <thead>
+                                                <tr className='bg-gray-50'>
+                                                    <th className='text-start p-3 text-sm border-b text-nowrap text-gray-500'>Sr.No.</th>
+                                                    <th className='text-start p-3 text-sm border-b text-nowrap text-gray-500'>Order id</th>
+                                                    <th className='text-start p-3 text-sm border-b text-nowrap text-gray-500'>Total Item</th>
+                                                    <th className='text-start p-3 text-sm border-b text-nowrap text-gray-500'>Status</th>
+                                                    <th className='text-start p-3 text-sm border-b text-nowrap text-gray-500'>Amount</th>
+                                                    <th className='text-start p-3 text-sm border-b text-nowrap text-gray-500'>Invoice</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {dashboardData && dashboardData?.data?.recentOrders?.map((order, i) => (
+                                                    <tr key={order._id} className='hover:bg-gray-50'>
+                                                        <td className='text-start text-sm text-gray-500 p-3 font-bold'>{i + 1}</td>
+                                                        <td className='text-start text-sm text-gray-500 p-3'>
+                                                            <Link className='underline hover:text-blue-500 underline-offset-2' href={WEBSITE_ORDER_DETAILS(order.order_id)}>
+                                                                {order.order_id}
+                                                            </Link>
+                                                        </td>
+                                                        <td className='text-start text-sm text-gray-500 p-3'>
+                                                            {order.products.length}
+                                                        </td>
+                                                        <td className='text-start text-sm text-gray-500 p-3 capitalize'>
+                                                            {order.status}
+                                                        </td>
+                                                        <td className='text-start text-sm text-gray-500 p-3'>
+                                                            {order.totalAmount.toLocaleString('en-In', { style: 'currency', currency: 'INR' })}
+                                                        </td>
+                                                        <td className='text-start text-sm text-gray-500 p-3'>
+                                                            <Link className='underline hover:text-blue-500 underline-offset-2' href={`/api/orders/invoice/${order.order_id}`} target='_blank'>
+                                                                Invoice
+                                                            </Link>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div className='mt-5'>
-                            <h4 className='text-lg font-semibold mb-3'>Recent Orders</h4>
-                            <div className='overflow-auto'>
-                                <table className='w-full'>
-                                    <thead>
-                                        <tr>
-                                            <th className='text-start p-2 text-sm border-b text-nowrap text-gray-500'>Sr.No.</th>
-                                            <th className='text-start p-2 text-sm border-b text-nowrap text-gray-500'>Order id</th>
-                                            <th className='text-start p-2 text-sm border-b text-nowrap text-gray-500'>Total Item</th>
-                                            <th className='text-start p-2 text-sm border-b text-nowrap text-gray-500'>Status</th>
-                                            <th className='text-start p-2 text-sm border-b text-nowrap text-gray-500'>Amount</th>
-                                            <th className='text-start p-2 text-sm border-b text-nowrap text-gray-500'>Invoice</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {dashboardData && dashboardData?.data?.recentOrders?.map((order, i) => (
-                                            <tr key={order._id}>
-                                                <td className='text-start text-sm text-gray-500 p-2 font-bold'>{i + 1}</td>
-                                                <td className='text-start text-sm text-gray-500 p-2'><Link className='underline hover:text-blue-500 underline-offset-2' href={WEBSITE_ORDER_DETAILS(order.order_id)}>{order.order_id}</Link></td>
-                                                <td className='text-start text-sm text-gray-500 p-2 '>
-                                                    {order.products.length}
-                                                </td>
-                                                <td className='text-start text-sm text-gray-500 p-2 capitalize'>
-                                                    {order.status}
-                                                </td>
-                                                <td className='text-start text-sm text-gray-500 p-2 '>
-                                                    {order.totalAmount.toLocaleString('en-In', { style: 'currency', currency: 'INR' })}
-                                                </td>
-                                                <td className='text-start text-sm text-gray-500 p-2'>
-                                                    <Link className='underline hover:text-blue-500 underline-offset-2' href={`/api/orders/invoice/${order.order_id}`} target='_blank'>Invoice</Link>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-
-                            </div>
-                        </div>
-
-                    </div>
+                    </UserPanelLayout>
                 </div>
-            </UserPanelLayout>
+            </section>
         </div>
     )
 }

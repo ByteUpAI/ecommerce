@@ -84,11 +84,16 @@ const LoginPage = () => {
 
             dispatch(login(otpResponse.data))
 
-            if (searchParams.has('callback')) {
-                router.push(searchParams.get('callback'))
-            } else {
-                otpResponse.data.role === 'admin' ? router.push(ADMIN_DASHBOARD) : router.push(USER_DASHBOARD)
+            const redirectTo = searchParams.has('callback')
+                ? searchParams.get('callback')
+                : (otpResponse.data.role === 'admin' ? ADMIN_DASHBOARD : USER_DASHBOARD)
+
+            if (redirectTo?.startsWith('/admin') && typeof window !== 'undefined') {
+                window.location.href = redirectTo
+                return
             }
+
+            router.push(redirectTo)
 
         } catch (error) {
             showToast('error', error.message)
