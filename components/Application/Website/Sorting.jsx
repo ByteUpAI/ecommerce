@@ -47,7 +47,7 @@ const Sorting = ({ limit, setLimit, sorting, setSorting, mobileFilterOpen, setMo
                 <button
                     type="button"
                     onClick={() => setMobileFilterOpen(!mobileFilterOpen)}
-                    className="bg-[var(--primary)] text-black px-6 py-3 font-semibold "
+                    className="bg-[var(--primary)] text-black w-full py-3 font-semibold hover:bg-black hover:text-white transition-colors"
                 >
                     Filter
                 </button>
@@ -57,11 +57,11 @@ const Sorting = ({ limit, setLimit, sorting, setSorting, mobileFilterOpen, setMo
             <div className="flex flex-wrap items-center gap-3">
 
                 {/* Search input */}
-                <div className="flex items-center border border-[var(--input-border)] focus-within:ring-1 focus-within:ring-[var(--input-focus)] transition">
+                <div className="flex-1 min-w-[150px] lg:flex-none lg:w-72 flex items-center border border-[var(--input-border)] bg-white focus-within:ring-1 focus-within:ring-[var(--input-focus)] transition h-[50px]">
                     <input
                         type="search"
                         placeholder="Search products..."
-                        className="text-base ps-[var(--input-x-padding)] py-[var(--input-y-padding)] outline-none bg-transparent"
+                        className="w-full text-base ps-[var(--input-x-padding)] py-[var(--input-y-padding)] outline-none bg-transparent"
                         onKeyDown={handleSearch}
                         defaultValue={searchParams.get('q') || ''}
                     />
@@ -69,19 +69,19 @@ const Sorting = ({ limit, setLimit, sorting, setSorting, mobileFilterOpen, setMo
                 </div>
 
                 {/* Sorting dropdown */}
-                <div ref={dropdownRef} className="relative w-52">
+                <div ref={dropdownRef} className="relative flex-1 min-w-[150px] lg:flex-none lg:w-52">
                     <button
                         type="button"
                         onClick={() => setDropdownOpen(prev => !prev)}
                         className="flex justify-between w-full px-[var(--input-x-padding)] py-[var(--input-y-padding)]
-                            text-left bg-white border border-[var(--input-border)] items-center"
+                            text-left bg-white border border-[var(--input-border)] items-center h-[50px]"
                     >
-                        <span>{selectedLabel}</span>
-                        <i className={`fa-solid fa-chevron-down transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
+                        <span className="truncate">{selectedLabel}</span>
+                        <i className={`fa-solid fa-chevron-down ms-2 transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
                     </button>
 
                     {dropdownOpen && (
-                        <div className="absolute left-0 top-full mt-2 w-full bg-white shadow rounded z-50">
+                        <div className="absolute left-0 top-full mt-2 w-full bg-white shadow rounded z-50 border border-gray-100">
                             {sortings.map((option) => (
                                 <button
                                     key={option.value}
@@ -90,7 +90,7 @@ const Sorting = ({ limit, setLimit, sorting, setSorting, mobileFilterOpen, setMo
                                         setSorting(option.value)
                                         setDropdownOpen(false)
                                     }}
-                                    className={`block w-full text-left px-4 py-2 hover:bg-gray-100 ${sorting === option.value ? 'text-[var(--primary)] font-semibold' : ''}`}
+                                    className={`block w-full text-left px-4 py-3 hover:bg-gray-100 ${sorting === option.value ? 'text-[var(--primary)] font-semibold' : ''}`}
                                 >
                                     {option.label}
                                 </button>
@@ -100,16 +100,8 @@ const Sorting = ({ limit, setLimit, sorting, setSorting, mobileFilterOpen, setMo
                 </div>
 
                 {/* Results count — pushed to the right */}
-                <div className="ml-auto flex items-center gap-4">
-                    {/* {hasFilters && (
-                        <Link
-                            href={WEBSITE_SHOP}
-                            className="bg-black text-white px-4 py-2 text-sm font-semibold hover:bg-[var(--primary)] hover:text-black transition-colors rounded shadow-sm"
-                        >
-                            Clear All Filters
-                        </Link>
-                    )} */}
-                    <p className="text-[var(--text-gray)]">
+                <div className="w-full sm:w-auto sm:ml-auto flex items-center gap-4 py-2 sm:py-0">
+                    <p className="text-[var(--text-gray)] text-sm sm:text-base">
                         Showing {totalProducts ?? ''} result{totalProducts !== 1 ? 's' : ''}
                     </p>
                 </div>

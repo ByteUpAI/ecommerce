@@ -20,7 +20,6 @@ const Header = () => {
   const auth = useSelector((store) => store.authStore.auth)
   const [isMobileMenu, setIsMobileMenu] = useState(false)
   const [showSearch, setShowSearch] = useState(false)
-  const [isShopSubmenuOpen, setIsShopSubmenuOpen] = useState(false)
   const pathname = usePathname()
 
   const navLinks = useMemo(() => ([
@@ -48,33 +47,7 @@ const Header = () => {
             {navLinks.map((link) => {
               const active = isActive(link)
 
-              if (link.label === 'Shop') {
-                return (
-                  <div key={link.href} className="relative group">
-                    <Link
-                      href={link.href}
-                      className={`relative pb-2 font-medium text-gray-800 after:absolute after:left-0 after:-bottom-1 after:h-[3px] after:bg-[var(--primary)] after:transition-all after:duration-300 ${
-                        active ? 'after:w-full' : 'after:w-0 group-hover:after:w-full'
-                      }`}
-                    >
-                      Shop
-                    </Link>
-                    {/* Dropdown */}
-                    <div className="absolute left-0 top-full mt-6 w-60 bg-white shadow-lg z-10 opacity-0 invisible translate-y-3 transition-all duration-300 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0">
-                      <Link href="/shop/shop-1" className="block px-6 py-4">
-                        <span className="relative inline-block after:absolute after:left-0 after:-bottom-1 after:h-[3px] after:w-0 after:bg-[var(--primary)] after:transition-all after:duration-300 hover:after:w-full">
-                          Shop-1
-                        </span>
-                      </Link>
-                      <Link href="/shop/shop-2" className="block px-6 py-4">
-                        <span className="relative inline-block after:absolute after:left-0 after:-bottom-1 after:h-[3px] after:w-0 after:bg-[var(--primary)] after:transition-all after:duration-300 hover:after:w-full">
-                          Shop-2
-                        </span>
-                      </Link>
-                    </div>
-                  </div>
-                )
-              }
+
 
               return (
                 <Link
@@ -169,27 +142,7 @@ const Header = () => {
           {navLinks.map((link) => {
             const active = isActive(link)
 
-            if (link.label === 'Shop') {
-              return (
-                <div key={link.href} className="border-b border-gray-300">
-                  <button
-                    className="w-full flex justify-between items-center py-4 transition-colors duration-300 hover:bg-[var(--primary)]"
-                    onClick={() => setIsShopSubmenuOpen(!isShopSubmenuOpen)}
-                  >
-                    <span className="font-medium">Shop</span>
-                    <LuChevronDown className={`w-4 h-4 transition-transform duration-300 ${isShopSubmenuOpen ? 'rotate-180' : ''}`} />
-                  </button>
-                  <div className={`overflow-hidden transition-all duration-300 bg-gray-100 ${isShopSubmenuOpen ? 'max-h-40' : 'max-h-0'}`}> 
-                    <Link href="/shop/shop-1" className="block py-4 border-b border-gray-200 hover:bg-gray-200" onClick={() => setIsMobileMenu(false)}>
-                      Shop-1
-                    </Link>
-                    <Link href="/shop/shop-2" className="block py-4 hover:bg-gray-200" onClick={() => setIsMobileMenu(false)}>
-                      Shop-2
-                    </Link>
-                  </div>
-                </div>
-              )
-            }
+
 
             return (
               <Link

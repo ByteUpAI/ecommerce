@@ -242,287 +242,295 @@ const Checkout = () => {
                     </div>
                 </div>
                 :
-                <div className='flex lg:flex-nowrap flex-wrap gap-10 my-20 lg:px-32 px-4'>
-                    <div className='lg:w-[60%] w-full'>
-                        <div className='flex font-semibold gap-2 items-center'>
-                            <FaShippingFast size={25} /> Shipping Address:
-                        </div>
-                        <div className='mt-5'>
-
-                            <Form {...orderForm}>
-                                <form className='grid grid-cols-2 gap-5' onSubmit={orderForm.handleSubmit(placeOrder)}>
-                                    <div className='mb-3'>
-                                        <FormField
-                                            control={orderForm.control}
-                                            name='name'
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormControl>
-                                                        <Input placeholder="Full name*" {...field} />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        >
-
-                                        </FormField>
-                                    </div>
-                                    <div className='mb-3'>
-                                        <FormField
-                                            control={orderForm.control}
-                                            name='email'
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormControl>
-                                                        <Input type="email" placeholder="Email*" {...field} />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        >
-
-                                        </FormField>
-                                    </div>
-                                    <div className='mb-3'>
-                                        <FormField
-                                            control={orderForm.control}
-                                            name='phone'
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormControl>
-                                                        <Input
-                                                            type="tel"
-                                                            placeholder="Phone*"
-                                                            inputMode="numeric"
-                                                            maxLength={10}
-                                                            {...field}
-                                                        />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        >
-
-                                        </FormField>
-                                    </div>
-                                    <div className='mb-3'>
-                                        <FormField
-                                            control={orderForm.control}
-                                            name='country'
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormControl>
-                                                        <Input placeholder="Country*" {...field} />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        >
-
-                                        </FormField>
-                                    </div>
-                                    <div className='mb-3'>
-                                        <FormField
-                                            control={orderForm.control}
-                                            name='state'
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormControl>
-                                                        <Input placeholder="State*" {...field} />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        >
-
-                                        </FormField>
-                                    </div>
-                                    <div className='mb-3'>
-                                        <FormField
-                                            control={orderForm.control}
-                                            name='city'
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormControl>
-                                                        <Input placeholder="City*" {...field} />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        >
-
-                                        </FormField>
-                                    </div>
-                                    <div className='mb-3'>
-                                        <FormField
-                                            control={orderForm.control}
-                                            name='pincode'
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormControl>
-                                                        <Input
-                                                            placeholder="Pincode*"
-                                                            inputMode="numeric"
-                                                            maxLength={6}
-                                                            {...field}
-                                                        />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        >
-
-                                        </FormField>
-                                    </div>
-                                    <div className='mb-3'>
-                                        <FormField
-                                            control={orderForm.control}
-                                            name='landmark'
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormControl>
-                                                        <Input placeholder="Landmark*" {...field} />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        >
-
-                                        </FormField>
-                                    </div>
-                                    <div className='mb-3 col-span-2'>
-                                        <FormField
-                                            control={orderForm.control}
-                                            name='ordernote'
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormControl>
-                                                        <Textarea placeholder="Enter order note" {...field} />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        >
-
-                                        </FormField>
-                                    </div>
-
-                                    <div className='mb-3'>
-                                        <ButtonLoading type="submit" text="Place Order" loading={placingOrder} className="bg-black rounded-full px-5 cursor-pointer" />
-                                    </div>
-
-                                </form>
-                            </Form>
-                        </div>
-
-                    </div>
-                    <div className='lg:w-[40%] w-full'>
-                        <div className='rounded bg-gray-50 p-5 sticky top-5'>
-                            <h4 className='text-lg font-semibold mb-5'>Order Summary</h4>
-                            <div>
-
-                                <table className='w-full border'>
-                                    <tbody>
-                                        {verifiedCartData && verifiedCartData?.map(product => (
-                                            <tr key={product.variantId}>
-                                                <td className='p-3'>
-                                                    <div className='flex items-center gap-5'>
-                                                        <Image src={product.media} width={60} height={60} alt={product.name} className='rounded' />
-                                                        <div>
-                                                            <h4 className='font-medium line-clamp-1'>
-                                                                <Link href={WEBSITE_PRODUCT_DETAILS(product.url)}>{product.name}</Link>
-                                                            </h4>
-                                                            {renderAttributes(product.attributes) || (
-                                                                <>
-                                                                    {product.color ? <p className='text-sm'>Color: {product.color}</p> : null}
-                                                                    {product.size ? <p className='text-sm'>Size: {product.size}</p> : null}
-                                                                </>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className='p-3 text-center'>
-                                                    <p className='text-nowrap text-sm'>
-                                                        {product.qty} x {product.sellingPrice.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}
-                                                    </p>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-
-                                <table className='w-full'>
-                                    <tbody>
-                                        <tr>
-                                            <td className='font-medium py-2'>Subtotal</td>
-                                            <td className='text-end py-2'>
-                                                {subtotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className='font-medium py-2'>Discount</td>
-                                            <td className='text-end py-2'>
-                                                - {discount.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className='font-medium py-2'>Coupon Discount</td>
-                                            <td className='text-end py-2'>
-                                                -  {couponDiscountAmount.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className='font-medium py-2 text-xl'>Total</td>
-                                            <td className='text-end py-2'>
-                                                {totalAmount.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-                                <div className='mt-2 mb-5'>
-                                    {!isCouponApplied
-                                        ?
-                                        <Form {...couponForm}>
-                                            <form className='flex justify-between gap-5' onSubmit={couponForm.handleSubmit(applyCoupon)}>
-                                                <div className='w-[calc(100%-100px)]'>
-                                                    <FormField
-                                                        control={couponForm.control}
-                                                        name='code'
-                                                        render={({ field }) => (
-                                                            <FormItem>
-                                                                <FormControl>
-                                                                    <Input placeholder="Enter coupon code" {...field} />
-                                                                </FormControl>
-                                                                <FormMessage />
-                                                            </FormItem>
-                                                        )}
-                                                    >
-
-                                                    </FormField>
-                                                </div>
-                                                <div className='w-[100px]'>
-                                                    <ButtonLoading type="submit" text="Apply" className="w-full cursor-pointer" loading={couponLoading} />
-                                                </div>
-                                            </form>
-                                        </Form>
-                                        :
-                                        <div className='flex justify-between py-1 px-5 rounded-lg bg-gray-200'>
-                                            <div>
-                                                <span className='text-xs'>Coupon:</span>
-                                                <p className='text-sm font-semibold'>{couponCode}</p>
-                                            </div>
-                                            <button type='button' onClick={removeCoupon} className='text-red-500 cursor-pointer'>
-                                                <IoCloseCircleSharp size={25} />
-                                            </button>
-                                        </div>
+                <section className="lg:pb-24 pb-12 md:pb-18 px-3 lg:px-8 xl:px-0 relative my-20 w-full">
+                    <div className="max-w-3xl lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl mx-auto relative z-10">
+                        <Form {...orderForm}>
+                            <form
+                                className="grid gap-8"
+                                style={{ gridTemplateColumns: 'repeat(1, 1fr)' }}
+                                ref={(el) => {
+                                    if (el) {
+                                        const applyLayout = () => {
+                                            if (window.innerWidth >= 1024) {
+                                                el.style.gridTemplateColumns = '1fr 360px'
+                                            } else {
+                                                el.style.gridTemplateColumns = '1fr'
+                                            }
+                                        }
+                                        applyLayout()
+                                        window.removeEventListener('resize', el._resizeHandler)
+                                        el._resizeHandler = applyLayout
+                                        window.addEventListener('resize', el._resizeHandler)
                                     }
+                                }}
+                                onSubmit={orderForm.handleSubmit(placeOrder)}
+                            >
+                                {/* LEFT: Billing Details */}
+                                <div className="min-w-0">
+                                    <div className="bg-white shadow p-6 pb-7">
+                                        <h3 className="text-xl font-bold mb-5">Billing Details</h3>
+                                        <div className="flex flex-col gap-y-4">
+                                            {/* Row 1: Name and Email */}
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
+                                                <FormField
+                                                    control={orderForm.control}
+                                                    name='name'
+                                                    render={({ field }) => (
+                                                        <FormItem className="space-y-1">
+                                                            <label htmlFor="f_name" className="text-sm font-medium">Full Name *</label>
+                                                            <FormControl>
+                                                                <div className="flex items-center border border-[var(--input-border)] focus-within:ring-1 focus-within:ring-[var(--input-focus)] transition">
+                                                                    <input {...field} id="f_name" className="w-full text-base px-[var(--input-x-padding)] py-[var(--input-y-padding)] outline-none bg-transparent" />
+                                                                </div>
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={orderForm.control}
+                                                    name='email'
+                                                    render={({ field }) => (
+                                                        <FormItem className="space-y-1">
+                                                            <label htmlFor="email" className="text-sm font-medium">Email *</label>
+                                                            <FormControl>
+                                                                <div className="flex items-center border border-[var(--input-border)] focus-within:ring-1 focus-within:ring-[var(--input-focus)] transition">
+                                                                    <input type="email" {...field} id="email" className="w-full text-base px-[var(--input-x-padding)] py-[var(--input-y-padding)] outline-none bg-transparent" />
+                                                                </div>
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+
+                                            {/* Row 2: Phone, Country, State */}
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-4">
+                                                <FormField
+                                                    control={orderForm.control}
+                                                    name='phone'
+                                                    render={({ field }) => (
+                                                        <FormItem className="space-y-1">
+                                                            <label htmlFor="p_number" className="text-sm font-medium">Phone Number *</label>
+                                                            <FormControl>
+                                                                <div className="flex items-center border border-[var(--input-border)] focus-within:ring-1 focus-within:ring-[var(--input-focus)] transition">
+                                                                    <input {...field} type="tel" id="p_number" maxLength={10} className="w-full text-base px-[var(--input-x-padding)] py-[var(--input-y-padding)] outline-none bg-transparent" />
+                                                                </div>
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={orderForm.control}
+                                                    name='country'
+                                                    render={({ field }) => (
+                                                        <FormItem className="space-y-1">
+                                                            <label htmlFor="country" className="text-sm font-medium">Country *</label>
+                                                            <FormControl>
+                                                                <div className="flex items-center border border-[var(--input-border)] focus-within:ring-1 focus-within:ring-[var(--input-focus)] transition">
+                                                                    <input {...field} id="country" className="w-full text-base px-[var(--input-x-padding)] py-[var(--input-y-padding)] outline-none bg-transparent" />
+                                                                </div>
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={orderForm.control}
+                                                    name='state'
+                                                    render={({ field }) => (
+                                                        <FormItem className="space-y-1">
+                                                            <label htmlFor="state" className="text-sm font-medium">State *</label>
+                                                            <FormControl>
+                                                                <div className="flex items-center border border-[var(--input-border)] focus-within:ring-1 focus-within:ring-[var(--input-focus)] transition">
+                                                                    <input {...field} id="state" className="w-full text-base px-[var(--input-x-padding)] py-[var(--input-y-padding)] outline-none bg-transparent" />
+                                                                </div>
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+
+                                            {/* Row 3: Pincode, City, Landmark */}
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-4">
+                                                <FormField
+                                                    control={orderForm.control}
+                                                    name='pincode'
+                                                    render={({ field }) => (
+                                                        <FormItem className="space-y-1">
+                                                            <label htmlFor="pincode" className="text-sm font-medium">Pincode *</label>
+                                                            <FormControl>
+                                                                <div className="flex items-center border border-[var(--input-border)] focus-within:ring-1 focus-within:ring-[var(--input-focus)] transition">
+                                                                    <input {...field} id="pincode" maxLength={6} className="w-full text-base px-[var(--input-x-padding)] py-[var(--input-y-padding)] outline-none bg-transparent" />
+                                                                </div>
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={orderForm.control}
+                                                    name='city'
+                                                    render={({ field }) => (
+                                                        <FormItem className="space-y-1">
+                                                            <label htmlFor="city" className="text-sm font-medium">City *</label>
+                                                            <FormControl>
+                                                                <div className="flex items-center border border-[var(--input-border)] focus-within:ring-1 focus-within:ring-[var(--input-focus)] transition">
+                                                                    <input {...field} id="city" className="w-full text-base px-[var(--input-x-padding)] py-[var(--input-y-padding)] outline-none bg-transparent" />
+                                                                </div>
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={orderForm.control}
+                                                    name='landmark'
+                                                    render={({ field }) => (
+                                                        <FormItem className="space-y-1">
+                                                            <label htmlFor="landmark" className="text-sm font-medium">Landmark *</label>
+                                                            <FormControl>
+                                                                <div className="flex items-center border border-[var(--input-border)] focus-within:ring-1 focus-within:ring-[var(--input-focus)] transition">
+                                                                    <input {...field} id="landmark" className="w-full text-base px-[var(--input-x-padding)] py-[var(--input-y-padding)] outline-none bg-transparent" />
+                                                                </div>
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+
+                                            {/* Row 4: Order Note */}
+                                            <FormField
+                                                control={orderForm.control}
+                                                name='ordernote'
+                                                render={({ field }) => (
+                                                    <FormItem className="space-y-1">
+                                                        <label htmlFor="order_note" className="text-sm font-medium">Order Note</label>
+                                                        <FormControl>
+                                                            <div className="flex items-start border border-[var(--input-border)] focus-within:ring-1 focus-within:ring-[var(--input-focus)] transition">
+                                                                <textarea
+                                                                    {...field}
+                                                                    id="order_note"
+                                                                    rows="2"
+                                                                    className="w-full text-base ps-[var(--input-x-padding)] py-[var(--input-y-padding)] outline-none bg-transparent"
+                                                                />
+                                                            </div>
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
 
-                            </div>
-                        </div>
+                                {/* RIGHT: Your Order */}
+                                <div className="w-full lg:w-[380px] lg:shrink-0">
+                                    <div className="bg-white shadow p-5 sticky top-5">
+                                        <h3 className="text-xl font-bold mb-5">Order Summary</h3>
+                                        <div className="max-h-[300px] overflow-y-auto pr-2 mb-4">
+                                            {verifiedCartData && verifiedCartData?.map(product => (
+                                                <div key={product.variantId} className="flex gap-4 mb-4">
+                                                    <div className="border border-[var(--text-light)] p-2 w-16 h-16 flex-shrink-0">
+                                                        <Image src={product.media} width={64} height={64} alt={product.name} className="object-contain w-full h-full rounded" />
+                                                    </div>
+                                                    <div>
+                                                        <div>
+                                                            <Link href={WEBSITE_PRODUCT_DETAILS(product.url)} className="text-lg lg:text-base xl:text-lg font-semibold hover:text-[var(--primary)] line-clamp-1">{product.name}</Link>
+                                                        </div>
+                                                        <div className="flex gap-3 items-center">
+                                                            <p className="text-sm flex items-center gap-2 relative after:content-['|'] after:ms-2 after:text-[var(--text-gray)] after:text-xl">
+                                                                <span><span>Qty:</span> {product.qty}</span>
+                                                            </p>
+                                                            <p className="text-sm font-medium">{product.sellingPrice.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}</p>
+                                                        </div>
+                                                        {renderAttributes(product.attributes)}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        <div className="border border-dashed border-gray-300 mb-4"></div>
+
+                                        {/* Coupon Section */}
+                                        <h4 className="text-base text-[var(--text-gray)] mb-2">Apply Coupon Code</h4>
+                                        <div className="mt-2 mb-6">
+                                            {!isCouponApplied
+                                                ?
+                                                <div className="flex items-center rounded transition focus-within:ring-0">
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Coupon Code"
+                                                        className="border border-[var(--text-light)] border-r-0 w-full text-sm h-11 px-3 py-3 outline-none bg-transparent"
+                                                        value={couponCode}
+                                                        onChange={(e) => {
+                                                            setCouponCode(e.target.value)
+                                                            couponForm.setValue('code', e.target.value)
+                                                        }}
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={couponForm.handleSubmit(applyCoupon)}
+                                                        className="btn-dark whitespace-nowrap h-11 cursor-pointer disabled:opacity-50"
+                                                        disabled={couponLoading || !couponCode}
+                                                    >
+                                                        {couponLoading ? '...' : 'Apply Now'}
+                                                    </button>
+                                                </div>
+                                                :
+                                                <div className='flex justify-between items-center py-2 px-4 rounded bg-gray-100 border border-dashed border-[var(--primary)]'>
+                                                    <div>
+                                                        <span className='text-[10px] uppercase text-[var(--text-gray)]'>Applied Coupon</span>
+                                                        <p className='text-sm font-bold'>{couponCode}</p>
+                                                    </div>
+                                                    <button type='button' onClick={removeCoupon} className='text-red-500 cursor-pointer hover:text-red-700 transition'>
+                                                        <IoCloseCircleSharp size={22} />
+                                                    </button>
+                                                </div>
+                                            }
+                                        </div>
+
+                                        <div className="border border-dashed border-gray-300 mb-4"></div>
+
+                                        {/* Summary Table */}
+                                        <div className="space-y-4 mb-6">
+                                            <div className="flex justify-between">
+                                                <div className="text-[var(--text-gray)]">Subtotal</div>
+                                                <div className="font-semibold">{subtotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}</div>
+                                            </div>
+                                            <div className="flex justify-between">
+                                                <div className="text-[var(--text-gray)]">Discount</div>
+                                                <div className="text-green-600 font-semibold">- {discount.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}</div>
+                                            </div>
+                                            <div className="flex justify-between">
+                                                <div className="text-[var(--text-gray)]">Coupon</div>
+                                                <div className="font-semibold">- {couponDiscountAmount.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}</div>
+                                            </div>
+                                            <div className="border border-dashed border-gray-300"></div>
+                                            <div className="flex justify-between text-lg font-bold">
+                                                <div className="text-[var(--text-gray)]">Total</div>
+                                                <div>{totalAmount.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}</div>
+                                            </div>
+                                        </div>
+
+                                        {/* Actions */}
+                                        <div className="mt-6">
+                                            <ButtonLoading
+                                                type="submit"
+                                                text="Place Order"
+                                                loading={placingOrder}
+                                                className="cart-btn w-full py-4 text-center cursor-pointer"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </Form>
                     </div>
-                </div>
+                </section>
             }
 
         </div>

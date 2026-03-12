@@ -61,7 +61,7 @@ const Shop = () => {
                             {/* Panel: fixed+slide on mobile | static+always-visible on desktop */}
                             <div className={`
                                 fixed top-0 left-0 h-full w-[85%] max-w-sm bg-white
-                                -translate-x-full transition-transform duration-300 z-50
+                                transition-transform duration-300 z-50 overflow-y-auto
                                 lg:static lg:translate-x-0 lg:w-full p-5 lg:p-0
                                 ${isMobileFilter ? 'translate-x-0' : '-translate-x-full'}
                             `}>
