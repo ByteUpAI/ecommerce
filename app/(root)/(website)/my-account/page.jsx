@@ -20,8 +20,8 @@ const MyAccount = () => {
     return (
         <div>
             <WebsiteBreadcrumb props={breadCrumbData} />
-            <section className='px-3 lg:px-8 xl:px-0 py-12 md:py-18 lg:py-24'>
-                <div className='max-w-3xl lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl mx-auto'>
+            <section className='px-3 py-6 md:py-8'>
+                <div className='w-full'>
                     <UserPanelLayout>
                         <div className='bg-white shadow-box border border-gray-100'>
                             <div className='p-6 md:p-8 border-b'>
