@@ -28,7 +28,7 @@ const UserPanelNavigation = () => {
         }
     }
     return (
-        <div className='border shadow-sm p-4 rounded'>
+        <div className='border border-gray-300 shadow-sm p-4 rounded'>
             <ul>
                 <li className='mb-2'>
                     <Link href={USER_DASHBOARD} className={`block p-3 text-sm rounded hover:bg-primary hover:text-white ${pathname.startsWith(USER_DASHBOARD) ? 'bg-primary text-white' : ''}`} >Dashboard</Link>

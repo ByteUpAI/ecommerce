@@ -93,27 +93,27 @@ const Profile = () => {
     return (
         <div>
             <WebsiteBreadcrumb props={breadCrumbData} />
-            <section className='px-3 lg:px-6 xl:px-8 py-6 md:py-8 lg:py-10'>
-                <UserPanelLayout>
-                    <div>
-                    <div className='p-5 md:p-6 text-xl font-semibold border-b border-gray-200'>
+            <section className='px-3 py-6 md:py-8'>
+
+            <UserPanelLayout>
+                <div className='shadow rounded'>
+                    <div className='p-5 text-xl font-semibold border-b'>
                         Profile
                     </div>
                     <div className='p-5 md:p-6'>
                         <Form {...form}>
-                            <form className='grid md:grid-cols-2 grid-cols-1 gap-5' onSubmit={form.handleSubmit(updateProfile)} >
-                                <div className='md:col-span-2 col-span-1 flex justify-center items-center'>
-
+                            <form className='' onSubmit={form.handleSubmit(updateProfile)} >
+                                <div className='flex items-center gap-4 mb-6'>
                                     <Dropzone onDrop={acceptedFiles => handleFileSelection(acceptedFiles)}>
                                         {({ getRootProps, getInputProps }) => (
                                             <div {...getRootProps()}>
                                                 <input {...getInputProps()} />
-                                                <Avatar className="w-28 h-28 relative group border border-gray-100">
+                                                <Avatar className="w-20 h-20 relative group border border-gray-200 cursor-pointer">
                                                     <AvatarImage src={preview ? preview : userIcon.src} />
                                                     <div className='absolute z-50 w-full h-full top-1/2
                                                      left-1/2 -translate-x-1/2 -translate-y-1/2
-                                                      justify-center items-center border-2 border-violet-500 rounded-full group-hover:flex hidden cursor-pointer bg-black/20'>
-                                                        <FaCamera color='#7c3aed' />
+                                                      justify-center items-center rounded-full group-hover:flex hidden cursor-pointer bg-black/20'>
+                                                        <FaCamera color='#fff' />
                                                     </div>
                                                 </Avatar>
                                             </div>
@@ -121,7 +121,8 @@ const Profile = () => {
                                         )}
                                     </Dropzone>
                                 </div>
-                                <div className='mb-3'>
+                              
+                                <div className='grid md:grid-cols-2 grid-cols-1 gap-5 mb-5'>
                                     <FormField
                                         control={form.control}
                                         name="name"
@@ -135,8 +136,6 @@ const Profile = () => {
                                             </FormItem>
                                         )}
                                     />
-                                </div>
-                                <div className='mb-3'>
                                     <FormField
                                         control={form.control}
                                         name="phone"
@@ -151,7 +150,7 @@ const Profile = () => {
                                         )}
                                     />
                                 </div>
-                                <div className='mb-3 md:col-span-2 col-span-1'>
+                                <div className='mb-5'>
                                     <FormField
                                         control={form.control}
                                         name="address"
@@ -167,17 +166,18 @@ const Profile = () => {
                                     />
                                 </div>
 
-                                <div className='mb-3 md:col-span-2 col-span-1'>
-                                    <ButtonLoading loading={loading} type="submit" text="Save Changes" className="cursor-pointer" />
+                                <div className=''>
+                                    <ButtonLoading loading={loading} type="submit" text="Save Changes" className="cursor-pointer text-white" />
                                 </div>
 
                             </form>
                         </Form>
 
                     </div>
-                    </div>
-                </UserPanelLayout>
-            </section>
+                </div>
+            </UserPanelLayout>
+                </section>
+
         </div>
     )
 }
