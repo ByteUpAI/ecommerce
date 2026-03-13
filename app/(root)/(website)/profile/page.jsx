@@ -93,15 +93,17 @@ const Profile = () => {
     return (
         <div>
             <WebsiteBreadcrumb props={breadCrumbData} />
-            <UserPanelLayout>
-                <div className='shadow rounded'>
-                    <div className='p-5 text-xl font-semibold border-b'>
+            <section className='px-3 lg:px-6 xl:px-8 py-6 md:py-8 lg:py-10'>
+                <UserPanelLayout>
+                    <div>
+                    <div className='p-5 md:p-6 text-xl font-semibold border-b border-gray-200'>
                         Profile
                     </div>
-                    <div className='p-5'>
+                    <div className='p-5 md:p-6'>
                         <Form {...form}>
                             <form className='grid md:grid-cols-2 grid-cols-1 gap-5' onSubmit={form.handleSubmit(updateProfile)} >
                                 <div className='md:col-span-2 col-span-1 flex justify-center items-center'>
+
                                     <Dropzone onDrop={acceptedFiles => handleFileSelection(acceptedFiles)}>
                                         {({ getRootProps, getInputProps }) => (
                                             <div {...getRootProps()}>
@@ -173,8 +175,9 @@ const Profile = () => {
                         </Form>
 
                     </div>
-                </div>
-            </UserPanelLayout>
+                    </div>
+                </UserPanelLayout>
+            </section>
         </div>
     )
 }
