@@ -20,8 +20,6 @@ const Header = () => {
   const auth = useSelector((store) => store.authStore.auth)
   const [isMobileMenu, setIsMobileMenu] = useState(false)
   const [showSearch, setShowSearch] = useState(false)
-  const [isShopSubmenuOpen, setIsShopSubmenuOpen] = useState(false)
-  const [mobileSearchQuery, setMobileSearchQuery] = useState('')
   const pathname = usePathname()
   const router = useRouter()
 
@@ -57,6 +55,8 @@ const Header = () => {
           <nav className="hidden lg:flex items-center space-x-10 text-[16px] text-black font-medium">
             {navLinks.map((link) => {
               const active = isActive(link)
+
+
 
               return (
                 <Link
@@ -160,27 +160,7 @@ const Header = () => {
           {navLinks.map((link) => {
             const active = isActive(link)
 
-            if (link.label === 'Shop') {
-              return (
-                <div key={link.href} className="border-b border-gray-300">
-                  <button
-                    className="w-full flex justify-between items-center py-4 transition-colors duration-300 hover:bg-[var(--primary)]"
-                    onClick={() => setIsShopSubmenuOpen(!isShopSubmenuOpen)}
-                  >
-                    <span className="font-medium">Shop</span>
-                    <LuChevronDown className={`w-4 h-4 transition-transform duration-300 ${isShopSubmenuOpen ? 'rotate-180' : ''}`} />
-                  </button>
-                  <div className={`overflow-hidden transition-all duration-300 bg-gray-100 ${isShopSubmenuOpen ? 'max-h-40' : 'max-h-0'}`}> 
-                    <Link href="/shop/shop-1" className="block py-4 border-b border-gray-200 hover:bg-gray-200" onClick={() => setIsMobileMenu(false)}>
-                      Shop-1
-                    </Link>
-                    <Link href="/shop/shop-2" className="block py-4 hover:bg-gray-200" onClick={() => setIsMobileMenu(false)}>
-                      Shop-2
-                    </Link>
-                  </div>
-                </div>
-              )
-            }
+
 
             return (
               <Link
