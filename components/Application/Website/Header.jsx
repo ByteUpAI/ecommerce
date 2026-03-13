@@ -20,6 +20,7 @@ const Header = () => {
   const auth = useSelector((store) => store.authStore.auth)
   const [isMobileMenu, setIsMobileMenu] = useState(false)
   const [showSearch, setShowSearch] = useState(false)
+  const [mobileSearchQuery, setMobileSearchQuery] = useState('')
   const pathname = usePathname()
   const router = useRouter()
 
