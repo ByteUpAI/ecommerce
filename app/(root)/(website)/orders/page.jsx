@@ -16,6 +16,8 @@ const Orders = () => {
     return (
         <div>
             <WebsiteBreadcrumb props={breadCrumbData} />
+            <section className='px-3 py-6 md:py-8'>
+
             <UserPanelLayout>
 
                 <div className='shadow rounded'>
@@ -67,6 +69,7 @@ const Orders = () => {
                     </div>
                 </div>
             </UserPanelLayout>
+            </section>
         </div>
     )
 }
