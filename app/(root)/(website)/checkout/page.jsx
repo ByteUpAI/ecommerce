@@ -23,9 +23,33 @@ import { useRouter } from 'next/navigation'
 import { z } from 'zod'
 
 import loading from '@/public/assets/images/loading.svg'
+import imgPlaceholder from '@/public/assets/images/img-placeholder.webp'
 
-const renderAttributes = (attributes) => {
+const getAttrValue = (attrs, key) => {
+    if (!attrs) return undefined
+    if (typeof attrs.get === 'function') return attrs.get(key)
+    return attrs?.[key]
+}
+
+const renderAttributes = (attributes, attributeConfig) => {
     if (!attributes) return null
+
+    const config = Array.isArray(attributeConfig) ? attributeConfig : []
+    if (config.length) {
+        return config
+            .map((attr) => {
+                const value = getAttrValue(attributes, attr.key)
+                if (value === undefined || value === null || !String(value).length) return null
+                const unit = attr.unit ? ` ${attr.unit}` : ''
+                return (
+                    <p key={attr.key} className='text-sm'>
+                        {attr.label || attr.key}: {String(value)}{unit}
+                    </p>
+                )
+            })
+            .filter(Boolean)
+    }
+
     const entries = typeof attributes?.entries === 'function'
         ? Array.from(attributes.entries())
         : Object.entries(attributes)
@@ -435,7 +459,7 @@ const Checkout = () => {
                                             {verifiedCartData && verifiedCartData?.map(product => (
                                                 <div key={product.variantId} className="flex gap-4 mb-4">
                                                     <div className="border border-[var(--text-light)] p-2 w-16 h-16 flex-shrink-0">
-                                                        <Image src={product.media} width={64} height={64} alt={product.name} className="object-contain w-full h-full rounded" />
+                                                        <Image src={product.media || imgPlaceholder.src} width={64} height={64} alt={product.name} className="object-contain w-full h-full" />
                                                     </div>
                                                     <div>
                                                         <div>
@@ -447,7 +471,7 @@ const Checkout = () => {
                                                             </p>
                                                             <p className="text-sm font-medium">{product.sellingPrice.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}</p>
                                                         </div>
-                                                        {renderAttributes(product.attributes)}
+                                                        {renderAttributes(product.attributes, product.attributeConfig)}
                                                     </div>
                                                 </div>
                                             ))}
@@ -522,7 +546,7 @@ const Checkout = () => {
                                                 type="submit"
                                                 text="Place Order"
                                                 loading={placingOrder}
-                                                className="cart-btn w-full py-4 text-center cursor-pointer"
+                                                className="cart-btn w-full py-4 text-center cursor-pointer rounded-none"
                                             />
                                         </div>
                                     </div>

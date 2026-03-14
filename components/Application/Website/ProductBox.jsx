@@ -22,9 +22,10 @@ const ProductBox = ({ product, wowDelay = '0.2s' }) => {
         : null
 
     const handleAddToCart = () => {
-        const v = product?.defaultVariant
+        const v = product?.defaultVariant || product?.variants?.[0]
         if (!v?._id) {
             showToast('error', 'Product is not available.')
+            router.push(WEBSITE_PRODUCT_DETAILS(product.slug))
             return
         }
 
@@ -41,7 +42,6 @@ const ProductBox = ({ product, wowDelay = '0.2s' }) => {
         }))
 
         showToast('success', 'Product added into cart.')
-        router.push(WEBSITE_PRODUCT_DETAILS(product.slug))
     }
 
     return (

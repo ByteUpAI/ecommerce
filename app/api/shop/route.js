@@ -77,7 +77,8 @@ export async function GET(request) {
 
             // Get variants
             const variants = await ProductVariantModel.find(variantFilter)
-                .select('attributes mrp sellingPrice discountPercentage sku stock')
+                .select('attributes mrp sellingPrice discountPercentage sku stock media')
+                .populate('media', 'secure_url')
                 .lean()
 
             // Only include product if it has matching variants
@@ -88,9 +89,20 @@ export async function GET(request) {
                     attributes: v.attributes instanceof Map ? Object.fromEntries(v.attributes) : v.attributes
                 }))
 
+                const firstVariant = variantsWithAttrs[0]
+
                 productsWithVariants.push({
                     ...product,
-                    variants: variantsWithAttrs
+                    variants: variantsWithAttrs,
+                    defaultVariant: firstVariant
+                        ? {
+                            _id: firstVariant._id,
+                            mrp: firstVariant.mrp,
+                            sellingPrice: firstVariant.sellingPrice,
+                            discountPercentage: firstVariant.discountPercentage,
+                            media: Array.isArray(firstVariant.media) ? firstVariant.media : [],
+                        }
+                        : null,
                 })
             }
         }
