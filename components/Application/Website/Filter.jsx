@@ -35,7 +35,7 @@ const FilterAccordion = ({ label, children }) => {
 // ── Checkbox label row ──
 const FilterCheckbox = ({ label, checked, onChange, isFirst, isLast }) => (
     <label
-        className={`flex items-center gap-3 px-4 py-2 text-lg font-bold relative z-10 hover:text-[var(--primary)] cursor-pointer
+        className={`flex items-center gap-3 px-4 py-2 text-lg font-normal relative z-10 hover:text-[var(--primary)] cursor-pointer
             ${isFirst ? 'pt-6' : ''} ${isLast ? 'pb-6' : ''}`}
     >
         <input

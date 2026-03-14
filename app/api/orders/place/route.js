@@ -29,6 +29,10 @@ export async function POST(request) {
 
         const auth = await isAuthenticated('user');
 
+        if (!auth?.isAuth) {
+            return response(false, 401, 'Please login to place an order.')
+        }
+
         const productSchema = z.object({
             productId: z.string().length(24, 'Invalid product id format'),
             variantId: z.string().length(24, 'Invalid variant id format'),
@@ -66,7 +70,7 @@ export async function POST(request) {
         const order_id = await generateOrderId();
 
         const newOrder = await OrderModel.create({
-            user: auth?.isAuth ? auth.userId : undefined,
+            user: auth.userId,
             name: validatedData.name,
             email: validatedData.email,
             phone: validatedData.phone,

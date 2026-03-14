@@ -24,6 +24,7 @@ import { z } from 'zod'
 
 import loading from '@/public/assets/images/loading.svg'
 import imgPlaceholder from '@/public/assets/images/img-placeholder.webp'
+import { WEBSITE_LOGIN } from '@/routes/WebsiteRoute'
 
 const getAttrValue = (attrs, key) => {
     if (!attrs) return undefined
@@ -84,6 +85,13 @@ const Checkout = () => {
     const [savingOrder, setSavingOrder] = useState(false)
 
     const { data: getVerifiedCartData } = useFetch('/api/cart-verification', 'POST', { data: cart.products })
+
+    useEffect(() => {
+        if (!authStore?.auth?._id) {
+            showToast('error', 'Please login to continue checkout.')
+            router.push(WEBSITE_LOGIN)
+        }
+    }, [authStore?.auth?._id])
 
     useEffect(() => {
         if (getVerifiedCartData && getVerifiedCartData.success) {
@@ -199,6 +207,11 @@ const Checkout = () => {
     }, [authStore])
 
     const placeOrder = async (formData) => {
+        if (!authStore?.auth?._id) {
+            showToast('error', 'Please login to place an order.')
+            router.push(WEBSITE_LOGIN)
+            return
+        }
         setPlacingOrder(true)
         try {
             setSavingOrder(true)

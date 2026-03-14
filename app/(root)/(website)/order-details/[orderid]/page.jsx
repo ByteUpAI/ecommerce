@@ -54,10 +54,16 @@ const OrderDetails = async ({ params }) => {
                             </thead>
                             <tbody>
                                 {orderData && orderData?.data?.products?.map((product) => (
-                                    <tr key={product.variantId._id} className="md:table-row block border-b">
+                                    <tr key={product?.variantId?._id || product?.variantId || product?.productId?._id} className="md:table-row block border-b">
                                         <td className="p-3">
                                             <div className="flex items-center gap-5">
-                                                <Image src={product?.variantId?.media[0]?.secure_url || placeholderImg.src} width={60} height={60} alt="product" className="rounded" />
+                                                <Image
+                                                    src={product?.variantId?.media?.[0]?.secure_url || product?.productId?.media?.[0]?.secure_url || placeholderImg.src}
+                                                    width={60}
+                                                    height={60}
+                                                    alt="product"
+                                                    className="rounded"
+                                                />
                                                 <div>
                                                     <h4 className="text-lg line-clamp-1">
                                                         <Link href={WEBSITE_PRODUCT_DETAILS(product?.productId?.slug)}>{product?.productId?.name}</Link>
